@@ -47,6 +47,7 @@ dependencies:
   shimmer: ^3.0.0
   page_transition: ^2.1.0
   flutter_map: ^5.0.0
+  mobile_scanner: ^3.2.0
 
 dev_dependencies:
   flutter_test:
