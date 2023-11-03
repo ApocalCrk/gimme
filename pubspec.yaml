@@ -47,6 +47,8 @@ dependencies:
   shimmer: ^3.0.0
   page_transition: ^2.1.0
   flutter_map: ^5.0.0
+  syncfusion_flutter_charts: ^23.1.43
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
