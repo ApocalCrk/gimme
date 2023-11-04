@@ -189,7 +189,7 @@ class _Detail_ExerciseState extends State<Detail_Exercise> {
         Stack(
           children: [
             Container(
-              width: 390,
+              width: MediaQuery.of(context).size.width,
               height: 100,
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -199,7 +199,7 @@ class _Detail_ExerciseState extends State<Detail_Exercise> {
             Column(
               children: [
                 Container(
-                  width: 400,
+                  width: MediaQuery.of(context).size.width,
                   height: 100,
                   child: Align(
                     alignment: Alignment.centerRight,
