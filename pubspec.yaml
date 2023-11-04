@@ -57,6 +57,8 @@ dependencies:
   http: ^1.1.0
   awesome_notifications: ^0.8.2
   mobile_scanner: ^3.2.0
+  syncfusion_flutter_charts: ^23.1.43
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
