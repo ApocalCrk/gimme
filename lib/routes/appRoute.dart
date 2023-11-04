@@ -5,6 +5,8 @@ import 'package:gimme/screens/dashboard/generate_qr/qr_screen.dart';
 import 'package:gimme/screens/dashboard/subs/subs_generator_screen.dart';
 import 'package:gimme/screens/profile/editProfile/editProfile_screen.dart';
 import 'package:gimme/screens/profile/profile_screen.dart';
+import 'package:gimme/screens/explore/explore_screen.dart';
+import 'package:gimme/screens/explore/slicing/qr_scanner.dart';
 import 'package:gimme/screens/statistic/statistics_screen.dart';
 import 'package:gimme/screens/auth/auth_screen.dart';
 import 'package:gimme/screens/auth/signin_screen.dart';
@@ -21,6 +23,9 @@ class AppRoute {
   static const String statistic = "/statistic";
   static const String profile = "/profile";
   static const String editProfile = "/profile/edit";
+  static const String explore = "/explore";
+  static const String qrScanner = "/explore/qrScanner";
+
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -42,6 +47,10 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case editProfile: 
         return MaterialPageRoute(builder: (_) => const EditProfileScreen());
+      case explore:
+        return MaterialPageRoute(builder: (_) => const ExploreScreen());
+      case qrScanner:
+        return MaterialPageRoute(builder: (_) => const BarcodeScannerPageView());
       default:
         return MaterialPageRoute(builder: (_) => const Auth());
     }

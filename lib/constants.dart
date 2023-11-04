@@ -66,3 +66,9 @@ const Map<int, Map<dynamic, String>> defaultShortcut = {
     "route": "/cardio"
   },
 };
+class LabelTextConstant{
+  static const String homePageAppBarTitle = "Modul QR, Scanner, Camera";
+  static const String scanQrPlaceHolderLabel = "Scan Something & click to copy to clipboard";
+  static const String txtonCopyingClipBoard = "Qr code disalin ke clipboard";
+  static const String txtonInvalidQRCode = "QR Code tidak valid";
+}
