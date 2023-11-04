@@ -12,6 +12,9 @@ const Color lowSuccessColor = Color(0xFFCCF3AE);
 const Color lowPrimaryColor = Color(0xFFAED6F3);
 const Color lowSecondaryColor = Color.fromRGBO(5, 5, 5, 0.08);
 
+Widget sizedBoxDefault = const SizedBox(height: 20);
+var dataUser = {};
+
 class SharedPref {
   static saveStr(String key, String message) async {
     final SharedPreferences pref = await SharedPreferences.getInstance();

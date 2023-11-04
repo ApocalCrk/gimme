@@ -1,11 +1,13 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
+import 'package:gimme/screens/dashboard/dashboard.dart';
 import 'package:gimme/screens/dashboard/slicing/maps.dart';
 import 'package:gimme/screens/dashboard/slicing/shortcut.dart';
 import 'package:gimme/screens/dashboard/slicing/subs.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // ignore: must_be_immutable
 class DashboardScreen extends StatelessWidget{
@@ -20,8 +22,8 @@ class DashboardScreen extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 43, left: 20, right: 20),
+            Padding(
+              padding: const EdgeInsets.only(top: 43, left: 20, right: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -29,15 +31,15 @@ class DashboardScreen extends StatelessWidget{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Hello Fathur,", 
-                        style: TextStyle(
+                        "Hello, ${dataUser['username']}!",
+                        style: const TextStyle(
                           color: Color(0xff000000),
                           fontSize: 20,
                           fontFamily: "Montserrat",
                           fontWeight: FontWeight.w600
                         ),
                       ),
-                      Text(
+                      const Text(
                         "Good Morning, Let's Exercise!",
                         style: TextStyle(
                           color: Color(0xff707070),
@@ -48,7 +50,7 @@ class DashboardScreen extends StatelessWidget{
                     ],
                   ),
                   CircleAvatar(
-                    backgroundImage: AssetImage("assets/images/avatar/fathur.jpg"),
+                    backgroundImage: Image.memory(base64Decode(dataUser['photoURL'])).image,
                   )
                 ],
               )

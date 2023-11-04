@@ -22,21 +22,14 @@ class _MapsState extends State<Maps> {
     _getLocation();
   }
 
-  @override
-  void dispose(){
-    super.dispose();
-  }
-
   Future<void> _getLocation() async {
     final PermissionStatus status = await Permission.location.request();
     if (status.isGranted) {
       Position position = await getCurrentLocation();
-      if (position != null) {
-        setState(() {
-          _currentPosition = position;
-        });
-      }
-    }
+      setState(() {
+        _currentPosition = position;
+      });
+        }
   }
 
   Future<Position> getCurrentLocation() async {
@@ -74,30 +67,37 @@ class _MapsState extends State<Maps> {
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               userAgentPackageName: 'com.example.app',
             ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  width: 20.0,
+                  height: 20.0,
+                  point: _currentPosition != null
+                      ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
+                      : const LatLng(0, 0),
+                  builder: (ctx) => Container(
+                    child: const Icon(
+                      Icons.circle,
+                      color: Colors.blue,
+                      size: 15,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             CircleLayer(
               circles: [
                 CircleMarker(
                   point: _currentPosition != null
                       ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
                       : const LatLng(0, 0),
-                  color: Colors.blue.withOpacity(0.7),
-                  borderColor: Colors.white.withOpacity(0.7),
+                  color: Colors.blue.withOpacity(0.1),
+                  borderColor: Colors.blue.withOpacity(0.3),
                   borderStrokeWidth: 2,
-                  useRadiusInMeter: true,
-                  radius: 20,
-                ),
-                CircleMarker(
-                  point: _currentPosition != null
-                      ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
-                      : const LatLng(0, 0),
-                  radius: 500,
-                  useRadiusInMeter: true,
-                  color: Colors.blue.withOpacity(0.2),
-                  borderColor: Colors.blue.withOpacity(0.5),
-                  borderStrokeWidth: 2,
+                  radius: 100,
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

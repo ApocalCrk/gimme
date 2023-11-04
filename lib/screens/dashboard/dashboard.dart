@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gimme/screens/dashboard/slicing/dashboard_screen.dart';
+import 'package:gimme/screens/profile/profile_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:gimme/screens/statistic/statistics_screen.dart';
 import 'package:gimme/constants.dart';
-
 
 class Dashboard extends StatefulWidget {  
   const Dashboard({Key? key}) : super(key: key);
@@ -30,6 +30,9 @@ class _DashboardState extends State<Dashboard> {
   var page = [
     DashboardScreen(),
     const StatisticsScreen(),
+    const StatisticsScreen(),
+    const StatisticsScreen(),
+    const ProfileScreen()
   ];
 
   @override

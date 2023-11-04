@@ -42,7 +42,7 @@ class _SubsGeneratorScreenState extends State<SubsGeneratorScreen> {
                   const SizedBox(width: 30)
                 ],
               ),
-              const SizedBox(height: 20),
+              sizedBoxDefault,
               const Text(
                 "Select Gyms",
                 style: TextStyle(

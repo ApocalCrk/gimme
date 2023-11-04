@@ -45,7 +45,7 @@ class _QrGeneratorScreenState extends State<QrGeneratorScreen> {
                     ]
                   )
                 ),
-                const SizedBox(height: 20),
+                sizedBoxDefault,
                 Container(
                   width: MediaQuery.of(context).size.width,
                   padding: const EdgeInsets.all(20),
