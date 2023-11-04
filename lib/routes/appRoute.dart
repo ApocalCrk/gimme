@@ -10,6 +10,8 @@ import 'package:gimme/screens/explore/slicing/qr_scanner.dart';
 import 'package:gimme/screens/statistic/statistics_screen.dart';
 import 'package:gimme/screens/auth/auth_screen.dart';
 import 'package:gimme/screens/auth/signin_screen.dart';
+import 'package:gimme/screens/workouts/workouts_sreen.dart';
+
 
 class AppRoute {
   static final navigatorKey = GlobalKey<NavigatorState>();
@@ -25,6 +27,7 @@ class AppRoute {
   static const String editProfile = "/profile/edit";
   static const String explore = "/explore";
   static const String qrScanner = "/explore/qrScanner";
+  static const String workouts = "/workouts";
 
 
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -51,6 +54,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const ExploreScreen());
       case qrScanner:
         return MaterialPageRoute(builder: (_) => const BarcodeScannerPageView());
+      case workouts:
+        return MaterialPageRoute(builder: (_) => const WorkoutsScreen());
       default:
         return MaterialPageRoute(builder: (_) => const Auth());
     }

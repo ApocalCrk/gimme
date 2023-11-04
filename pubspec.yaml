@@ -82,6 +82,8 @@ flutter:
     - assets/images/icon/
     - assets/images/gym_images/
     - assets/images/screen/
+    - assets/images/workouts_images/
+    - assets/images/workouts_images/chest_detail_images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
