@@ -50,6 +50,7 @@ class DashboardScreen extends StatelessWidget{
                     ],
                   ),
                   CircleAvatar(
+                    backgroundColor: secondaryColor,
                     backgroundImage: Image.memory(base64Decode(dataUser['photoURL'])).image,
                   )
                 ],
