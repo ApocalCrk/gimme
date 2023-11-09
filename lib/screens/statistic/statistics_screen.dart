@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:gimme/screens/statistic/component/statistics_component.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 const List<String> dropdownPlaceholder = <String>["Daily", "Monthly"];
@@ -14,6 +14,9 @@ class StatisticsScreen extends StatefulWidget {
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
   String temp = dropdownPlaceholder.first;
+  String _statisticState = dropdownPlaceholder.first;
+  double? meanDaily = findDailyMean() ?? 0;
+  double? meanMonthly = findMonthlyMean() ?? 0;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +50,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
+                          Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -59,7 +62,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                     fontFamily: "Montserrat"),
                               ),
                               Text(
-                                '60 Min',
+                                _statisticState == dropdownPlaceholder.first
+                                    ? meanDaily!.toStringAsFixed(2) : meanMonthly!.toStringAsFixed(2),
                                 style: TextStyle(
                                     color: Color(0xff000000),
                                     fontSize: 20,
@@ -71,7 +75,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           DecoratedBox(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: Color.fromARGB(255, 255, 255, 255),
+                                color: const Color.fromARGB(255, 255, 255, 255),
                                 border: Border.all(color: Color(0xff707070))),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 8, right: 8),
@@ -79,12 +83,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 value: temp,
                                 items: [
                                   DropdownMenuItem(
-                                    child: Text(dropdownPlaceholder.first),
                                     value: dropdownPlaceholder.first,
+                                    child: Text(dropdownPlaceholder.first),
                                   ),
                                   DropdownMenuItem(
-                                    child: Text(dropdownPlaceholder.last),
                                     value: dropdownPlaceholder.last,
+                                    child: Text(dropdownPlaceholder.last),
                                   )
                                 ],
                                 icon: const Icon(Icons.arrow_drop_down_rounded),
@@ -96,6 +100,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 onChanged: (String? value) {
                                   setState(() {
                                     temp = value!;
+                                    _statisticState = value;
+                                    setState(() {});
                                   });
                                 },
                                 underline: Container(),
@@ -105,16 +111,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      SfCartesianChart(
-                          legend: Legend(isVisible: true),
-                          primaryXAxis: NumericAxis(
-                            majorGridLines: MajorGridLines(width: 0),
-                            axisLine: AxisLine(width: 0),
-                          ),
-                          primaryYAxis: NumericAxis(
-                            majorGridLines: MajorGridLines(width: 0),
-                            axisLine: AxisLine(width: 0),
-                          )),
+                      _statisticState == dropdownPlaceholder.first
+                          ? DailyStatistics()
+                          : MonthlyStatistics(),
                       const SizedBox(height: 20),
                       const Text(
                         'Recent Plan',
