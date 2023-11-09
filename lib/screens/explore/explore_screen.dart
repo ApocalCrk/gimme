@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gimme/constants.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:gimme/screens/dashboard/slicing/dashboard_screen.dart';
 
@@ -71,11 +72,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     ),
                     Positioned(
                       right: 10,
-                      bottom: 40,
-                      child: Icon(
-                        Icons.location_on,
-                        color: Colors.black.withOpacity(0.7),
-                        size: 30,
+                      bottom: 30,
+                      child: IconButton(
+                        onPressed: () => Navigator.pushNamed(context, "/explore/map"),
+                        icon:Icon(
+                          Icons.location_on,
+                          color: Colors.black.withOpacity(0.7),
+                          size: 30,
+                        ), 
                       ),
                     ),
                   ],
@@ -104,6 +108,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     ),
                   ],
                 ),
+                SizedBox(height: 10),
+                buildCard(),
+                buildCard(),
+                buildCard(),
+                buildCard(),
+                buildCard(),
+                buildCard(),
+                buildCard(),
             ],
           ),
         ),
@@ -111,3 +123,196 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 }
+Card buildCard() {
+   var cardImage = NetworkImage('https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+   var supportingText ='Beautiful home to rent, recently refurbished with modern appliances...';
+   return Card(
+       elevation: 4.0,
+       child: Column(
+         children: [
+          Container(
+             height: 200.0,
+             child: Ink.image(
+               image: cardImage,
+               fit: BoxFit.cover,
+             ),
+           ),
+           Container(
+              padding: EdgeInsets.only(right: 16.0, left: 16.0, top: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Fathur Gym",
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(1),
+                      fontSize: 25,
+                      fontFamily: "Montserrat",
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Spacer(), // Spacer untuk mengisi ruang kosong
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.access_time_outlined,
+                        color: Colors.blue,
+                        size: 15,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        "08.00-20.00",
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(1),
+                          fontSize: 15,
+                          fontFamily: "Montserrat",
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+          ),
+          Container(
+              padding: EdgeInsets.only(right: 16.0, left: 10.0,top: 5.0),
+              child: Row(
+                children: [
+                  Icon(
+                        Icons.location_on,
+                        size: 25,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                  Text(
+                    "Jl.Buah Apel No.62,Kalasan",
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.5),
+                      fontSize: 15,
+                      fontFamily: "Montserrat",
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+          ),
+          Container(
+             padding: EdgeInsets.only(right: 16.0, left: 16.0, bottom: 5.0, top: 10.0),
+             alignment: Alignment.centerLeft,
+             child: Text(supportingText, style: TextStyle(color: Colors.black.withOpacity(0.5),fontFamily: "Montserrat",fontWeight: FontWeight.w600)),
+          ),
+          Container(
+            padding: EdgeInsets.only(right: 16.0, left: 16.0,bottom: 5),
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "People Has Joined",
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.8),
+                        fontSize: 12,
+                        fontFamily: "Montserrat",
+                        fontWeight: FontWeight.bold,
+                      )
+                    ),
+                    Stack(
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(color: Colors.white, width: 2)
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              "https://images.pexels.com/photos/38630/bodybuilder-weight-training-stress-38630.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                              fit: BoxFit.cover,
+                              )),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 15),
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(color: Colors.white, width: 2)
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              "https://images.pexels.com/photos/38630/bodybuilder-weight-training-stress-38630.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                              fit: BoxFit.cover,
+                              )),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 30),
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: secondaryColor,
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(color: Colors.white, width: 2)
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              "https://images.pexels.com/photos/38630/bodybuilder-weight-training-stress-38630.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                              fit: BoxFit.cover,
+                              )),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 65,top: 7),
+                          child: Text(
+                            "+ 20 others",
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.8),
+                              fontSize: 10,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.bold,
+                            )
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 5),
+                  width: 80,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: 
+                    TextButton(
+                      child: const Text('Detail',style: TextStyle(color: Colors.white),),
+                      onPressed: () {/* ... */},
+                    )
+                )
+              ],
+            )
+          ),
+          
+         ],
+       ));
+ }
+buildBox() {
+   Container(
+      width: 30,
+      height: 30,
+      decoration: BoxDecoration(
+        color: secondaryColor,
+        borderRadius: BorderRadius.circular(50),
+        border: Border.all(color: Colors.white, width: 2)
+      ),
+      child: ClipOval(
+        child: Image.network(
+          "https://images.pexels.com/photos/38630/bodybuilder-weight-training-stress-38630.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+          fit: BoxFit.cover
+          ))
+    );
+ }
