@@ -33,6 +33,25 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.2"
+<<<<<<< HEAD
+=======
+  barcode:
+    dependency: transitive
+    description:
+      name: barcode
+      sha256: "789f898eef0bd88312470bdb2cc996f895ad7dd5f89e9adde84b204546a90b45"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.4"
+  barcode_widget:
+    dependency: "direct main"
+    description:
+      name: barcode_widget
+      sha256: "6f2c5b08659b1a5f4d88d183e6007133ea2f96e50e7b8bb628f03266c3931427"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.4"
+>>>>>>> 0be09e2599e9db3e8de9e7d77b6e80f29e8dc4b9
   boolean_selector:
     dependency: transitive
     description:
@@ -278,6 +297,17 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.17"
+<<<<<<< HEAD
+=======
+  flutter_sliding_up_panel:
+    dependency: "direct main"
+    description:
+      name: flutter_sliding_up_panel
+      sha256: "94f928973d83e146bbc52051e2d9f2a7ed7a5c9e7f04b54d835fff2e41d6cb99"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
+>>>>>>> 0be09e2599e9db3e8de9e7d77b6e80f29e8dc4b9
   flutter_svg:
     dependency: "direct main"
     description:
