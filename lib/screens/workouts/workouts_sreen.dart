@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
+import 'package:gimme/screens/transaction_screen/transaction.dart';
 import 'package:gimme/screens/workouts/detail_workouts/chest_detail.dart';
 
 class WorkoutsScreen extends StatefulWidget {
@@ -10,6 +11,14 @@ class WorkoutsScreen extends StatefulWidget {
 }
 
 class _WorkoutsScreenState extends State<WorkoutsScreen> {
+  bool showPerformance = false;
+
+  onSettingCallback() {
+    setState(() {
+      showPerformance = !showPerformance;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +46,17 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
             },
             child: Workout(
                 image: "assets/images/workouts_images/chest_workout.png",
+                workout_name: "Chest Workout",
+                workout_type: "Classic Workout"),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      MyHomePage(onSetting: onSettingCallback)));
+            },
+            child: Workout(
+                image: "assets/images/workouts_images/arms_workout.png",
                 workout_name: "Chest Workout",
                 workout_type: "Classic Workout"),
           ),

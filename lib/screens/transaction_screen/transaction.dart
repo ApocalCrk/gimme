@@ -4,11 +4,10 @@ import 'dart:math' as math;
 import 'package:gimme/screens/transaction_screen/detail.transaction.dart';
 
 class MyHomePage extends StatefulWidget {
-  final String title;
 
   final VoidCallback onSetting;
 
-  MyHomePage({Key? key, required this.title, required this.onSetting})
+  MyHomePage({Key? key, required this.onSetting})
       : super(key: key);
 
   @override
