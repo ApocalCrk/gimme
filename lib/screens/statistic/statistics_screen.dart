@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gimme/constants.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({Key? key}) : super(key: key);
 
   
   @override
+  // ignore: library_private_types_in_public_api
   _StatisticsScreenState createState() => _StatisticsScreenState();
 }
 

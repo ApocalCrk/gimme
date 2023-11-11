@@ -55,6 +55,9 @@ dependencies:
   intl: ^0.18.1
   image_picker: ^1.0.4
   http: ^1.1.0
+  gson: ^0.1.6-dev
+  geocoding: ^2.1.1
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
