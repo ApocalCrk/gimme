@@ -167,7 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           Text(
                             dataUser['username'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 25,
                               fontFamily: "Montserrat",
@@ -176,7 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           Text(
                             dataUser['email'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: secondaryColor,
                               fontSize: 15,
                               fontFamily: "Montserrat",

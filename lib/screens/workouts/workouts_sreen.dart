@@ -51,9 +51,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
           ),
           InkWell(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      MyHomePage(onSetting: onSettingCallback)));
+              
             },
             child: Workout(
                 image: "assets/images/workouts_images/arms_workout.png",

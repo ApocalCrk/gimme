@@ -60,6 +60,9 @@ dependencies:
   flutter_sliding_up_panel: ^2.1.1
   pdf: ^3.10.6
   printing: ^5.11.1
+  gson: ^0.1.6-dev
+  geocoding: ^2.1.1
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:

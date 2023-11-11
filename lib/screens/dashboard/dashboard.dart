@@ -6,6 +6,8 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:gimme/screens/statistic/statistics_screen.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/screens/workouts/workouts_sreen.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:gimme/screens/dashboard/slicing/panel.dart';
 
 class Dashboard extends StatefulWidget {  
   const Dashboard({Key? key}) : super(key: key);
@@ -15,22 +17,28 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  final controller = ScrollController(); 
+
   var currentIndex = 0;
   PageController? _pageController;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _pageController = PageController(); 
+    readDataShortcuts();
   }
 
-  @override
-  void dispose(){
-    super.dispose();
+  readDataShortcuts() async {
+    var start = await SharedPref.readPrefStr("shortcuts");
+    Map<int, Map<dynamic, String>> dataTemp = convertJsonToMap(start);
+    setState(() {
+      dataUser['shortcuts'] = dataTemp;
+    });
   }
-  
+
   var page = [
-    DashboardScreen(),
+    const DashboardScreen(),
     const StatisticsScreen(),
     const WorkoutsScreen(),
     const ExploreScreen(),
@@ -40,13 +48,30 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox.expand(
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: (index) {
-            setState(() => currentIndex = index);
-          },
-          children: page
+        body: SlidingUpPanel(
+        controller: panelController,
+        minHeight: 0,
+        maxHeight: 280,
+        defaultPanelState: PanelState.CLOSED,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        backdropEnabled: true,
+        backdropOpacity: 0.3,
+        backdropTapClosesPanel: true,
+        backdropColor: Colors.black.withOpacity(0.5),
+        panelBuilder: (controller) {
+          return Panel(
+            controller: controller,
+            panelController: panelController,
+          );
+        },
+        body: SizedBox.expand(
+          child: PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() => currentIndex = index);
+            },
+            children: page
+          ),
         ),
       ),
       bottomNavigationBar: SalomonBottomBar(

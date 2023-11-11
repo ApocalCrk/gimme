@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:gimme/constants.dart';
 import 'package:gimme/screens/dashboard/dashboard.dart';
 import 'package:gimme/screens/dashboard/slicing/dashboard_screen.dart';
 import 'package:gimme/screens/workouts/workouts_sreen.dart';
 import 'package:uuid/uuid.dart';
-// import 'package:gimme/screens/transaction_screen/for_pdf/pdf_view.dart';
+import 'package:gimme/screens/transaction_screen/for_pdf/pdf_view.dart';
 
 class DetailTransaksi extends StatefulWidget {
-  const DetailTransaksi({super.key});
+  final Map<String, dynamic>? detailTransaksi;
+  const DetailTransaksi({Key? key, this.detailTransaksi})
+      : super(key: key);
 
   @override
   State<DetailTransaksi> createState() => _DetailTransaksiState();
 }
 
 class _DetailTransaksiState extends State<DetailTransaksi> {
+  // ignore: non_constant_identifier_names
   Container generate_barcode(String id) {
     return Container(
       child: Padding(
@@ -22,15 +26,15 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
             data: id,
             width: 200.0,
             height: 60.0,
-            barcode: Barcode.code128(escapes: true)),
+            barcode: Barcode.code128(escapes: true),
+            drawText: false,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    String id = const Uuid().v1();
-
     // waiting reterieve data from firebase
 
     // if (listToTransction == null) {
@@ -179,7 +183,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             textAlign: TextAlign.center,
                           ),
                           Text(
-                            "listToTransction!.first.gymName!",
+                            widget.detailTransaksi!['receipt'],
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 13,
@@ -205,7 +209,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             textAlign: TextAlign.center,
                           ),
                           Text(
-                            "listToTransction!.first.date!",
+                            widget.detailTransaksi!['date'].toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 13,
@@ -231,7 +235,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             textAlign: TextAlign.center,
                           ),
                           Text(
-                            "listToTransction!.first.price!",
+                            "Rp ${moneyFormat(widget.detailTransaksi!['price'])}",
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 13,
@@ -257,7 +261,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                             textAlign: TextAlign.center,
                           ),
                           Text(
-                            "listToTransction!.first.id!",
+                            widget.detailTransaksi!['transaction_id'].toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 13,
@@ -271,14 +275,14 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                     Padding(
                       padding:
                           EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-                      child: generate_barcode(id),
+                      child: generate_barcode(widget.detailTransaksi!['transaction_id'].toString()),
                     ),
                     Padding(
                       padding:
                           EdgeInsets.only(left: 15.0, right: 15.0, top: 10.0),
                       child: TextButton(
                         child: const Text(
-                          'Dismis',
+                          'Dismiss',
                           style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -304,7 +308,7 @@ class _DetailTransaksiState extends State<DetailTransaksi> {
                   width: 175.0,
                   child: TextButton(
                       onPressed: () {
-                        // createPdf(listToTransction!, context, id);
+                        createPdf(widget.detailTransaksi!, context);
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.white,

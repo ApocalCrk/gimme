@@ -17,15 +17,15 @@ class Maps extends StatefulWidget {
 }
 
 class _MapsState extends State<Maps> {
+  final String overpassUrl = "https://overpass-api.de/api/interpreter";
   Position? _currentPosition;
   final MapController _mapController = MapController();
-  List<dynamic> data = [];
+  List<Map<String, dynamic>> gyms = [];
 
   @override
   void initState() {
     super.initState();
     _getLocation();
-    _searchNearbyPlace();
   }
 
   Future<void> _getLocation() async {
@@ -34,17 +34,9 @@ class _MapsState extends State<Maps> {
       Position position = await getCurrentLocation();
       setState(() {
         _currentPosition = position;
+        getNearbyGyms(position.latitude, position.longitude);
       });
     }
-  }
-
-  Future<void> _searchNearbyPlace() async {
-    Position position = await getCurrentLocation();
-    var dataNearby = await http.get(Uri.parse("https://nominatim.openstreetmap.org/search?q=cafe&format=json&lat=${position.latitude}&lon=${position.longitude}&zoom=18&addressdetails=1"));
-    List<dynamic> dataDec = jsonDecode(dataNearby.body);
-    setState(() {
-      data = dataDec;
-    });
   }
 
   Future<Position> getCurrentLocation() async {
@@ -58,79 +50,112 @@ class _MapsState extends State<Maps> {
     }
   }
 
+  Future<void> getNearbyGyms(double lat, double long) async {
+    String overpassQuery = """
+      [out:json];
+      (
+        node["leisure"="fitness_centre"](around:100,$lat,$long);
+        node["amenity"="gym"](around:100,$lat,$long);
+        way["leisure"="fitness_centre"](around:100,$lat,$long);
+        relation["leisure"="fitness_centre"](around:100,$lat,$long);
+      );
+      out center;
+    """;
+    http.Response response = await http.get(Uri.parse('$overpassUrl?data=${Uri.encodeQueryComponent(overpassQuery)}'));
+    Map<String, dynamic> data = json.decode(response.body);
+    List<Map<String, dynamic>> newGyms = [];
+    for (var element in data['elements']) {
+      if(element['tags']['name'] != null){
+        Map<String, dynamic> gymInfo = {
+          'name': element['tags']['name'] ?? 'N/A',
+          'latitude': element['lat'] ?? 'N/A',
+          'longitude': element['lon'] ?? 'N/A',
+        };
+        newGyms.add(gymInfo);
+      }
+    }
+
+    setState(() {
+      gyms = newGyms;
+    });
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
   _buildMap() {
-    return GestureDetector(
-      onScaleUpdate: (ScaleUpdateDetails details) {
-        double newZoom = _mapController.zoom + details.scale - 1.0;
-        if (newZoom >= 10.0 && newZoom <= 18.0) {
-          _mapController.move(_mapController.center, newZoom);
-        }
-      },
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: 350.0, 
-        child: FlutterMap(
-          options: MapOptions(
-            center: _currentPosition != null
-                ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
-                : const LatLng(0, 0),
-            zoom: 15.0,
-            maxZoom: 18.0,
-            minZoom: 10.0,
-            // interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 350.0, 
+      child: FlutterMap(
+        mapController: _mapController,
+        options: MapOptions(
+          center: _currentPosition != null
+              ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
+              : const LatLng(0, 0),
+          zoom: 15.0,
+          maxZoom: 18.0,
+          minZoom: 10.0,
+        ),
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.example.app',
+            maxZoom: 18,
           ),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.example.app',
-              maxZoom: 18,
-            ),
-            MarkerLayer(
-              markers: [
+          MarkerLayer(
+            markers: [
+              Marker(
+                width: 20.0,
+                height: 20.0,
+                point: _currentPosition != null
+                    ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
+                    : const LatLng(0, 0),
+                builder: (ctx) => const Icon(
+                  Icons.circle,
+                  color: Colors.blue,
+                  size: 15,
+                ),
+              ),
+            ],
+          ),
+          MarkerLayer(
+            markers: [
+              for (var gym in gyms)
                 Marker(
                   width: 20.0,
                   height: 20.0,
-                  point: _currentPosition != null
-                      ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
-                      : const LatLng(0, 0),
-                  builder: (ctx) => const Icon(
-                    Icons.circle,
-                    color: Colors.blue,
-                    size: 15,
-                  ),
-                ),
-              ],
-            ),
-            for(var i = 0; i < data.length; i++)
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    width: 20.0,
-                    height: 20.0,
-                    point: LatLng(double.parse(data[i]['lat']), double.parse(data[i]['lon'])),
-                    builder: (ctx) => const Icon(
-                      Icons.circle,
-                      color: Colors.red,
-                      size: 15,
+                  point: LatLng(gym['latitude'], gym['longitude']),
+                  builder: (ctx) => InkWell(
+                    onTap: () async {
+                      print("check");
+                    },
+                    child: const Icon(
+                      Icons.run_circle,
+                      color: Colors.black,
+                      size: 18,
                     ),
                   ),
-                ],
-              ),
-            CircleLayer(
-              circles: [
-                CircleMarker(
-                  point: _currentPosition != null
-                      ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
-                      : const LatLng(0, 0),
-                  color: Colors.blue.withOpacity(0.1),
-                  borderColor: Colors.blue.withOpacity(0.3),
-                  borderStrokeWidth: 2,
-                  radius: 100,
                 ),
-              ],
-            ),
-          ],
-        ),
+            ],
+          ),
+          CircleLayer(
+            circles: [
+              CircleMarker(
+                point: _currentPosition != null
+                    ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
+                    : const LatLng(0, 0),
+                color: Colors.blue.withOpacity(0.1),
+                borderColor: Colors.blue.withOpacity(0.3),
+                borderStrokeWidth: 2,
+                radius: 100,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

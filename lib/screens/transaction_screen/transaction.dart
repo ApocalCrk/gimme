@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sliding_up_panel/flutter_sliding_up_panel.dart';
+import 'package:gimme/constants.dart';
 import 'dart:math' as math;
 import 'package:gimme/screens/transaction_screen/detail.transaction.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
-class MyHomePage extends StatefulWidget {
 
-  final VoidCallback onSetting;
+class PaymentScreen extends StatefulWidget {
+  final Map<String, dynamic> sendData;
 
-  MyHomePage({Key? key, required this.onSetting})
+  PaymentScreen({Key? key, required this.sendData})
       : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _PaymentScreennState createState() => _PaymentScreennState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _PaymentScreennState extends State<PaymentScreen> {
   late ScrollController scrollController;
 
   SlidingUpPanelController panelController = SlidingUpPanelController();
@@ -22,6 +25,8 @@ class _MyHomePageState extends State<MyHomePage> {
   double minBound = 0.0;
 
   double upperBound = 1.0;
+
+  Map<String, dynamic> data = {};
 
   @override
   void initState() {
@@ -38,6 +43,17 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {}
     });
     super.initState();
+    getDetailGym(widget.sendData['id_gym']);
+  }
+
+  getDetailGym(id) async {
+    await FirebaseFirestore.instance.collection('gym')
+    .where('id_gym', isEqualTo: id)
+    .get().then((value) {
+        setState(() {
+          data = value.docs[0].data();
+        });
+    });
   }
 
   @override
@@ -70,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         InkWell(
                           child: Icon(Icons.arrow_back_rounded,
-                              color: Colors.black.withOpacity(0.7), size: 40),
+                              color: Colors.black.withOpacity(0.7), size: 30),
                           onTap: () => Navigator.pop(context),
                         ),
                         Text(
@@ -95,14 +111,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0),
                         child: Text(
-                          'Nama Gym | Gym Babarsari, Yogyakarta',
+                          '${data['name']} | ${data['place']}',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 40.0),
                         child: Text(
-                          'Rp. 1.200.000,00',
+                          'Payment Detail',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 30,
@@ -125,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                    child: Text('Nama Gym'),
+                    child: Text('${data['name']}'),
                   ),
                 ],
               ),
@@ -138,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                    child: Text('1.200.000,00'),
+                    child: Text('Rp ${moneyFormat(widget.sendData['price'])}'),
                   ),
                 ],
               ),
@@ -151,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                    child: Text('Membership'),
+                    child: Text('${widget.sendData['type']}'),
                   ),
                 ],
               ),
@@ -164,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                    child: Text('Membership'),
+                    child: Text('${widget.sendData['bundle']}'),
                   ),
                 ],
               ),
@@ -177,7 +193,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                    child: Text('12 tahun'),
+                    child: Text(widget.sendData['type'] == 'Monthly'
+                        ? '1 Month'
+                        : '1 Year'),
                   ),
                 ],
               ),
@@ -221,9 +239,39 @@ class _MyHomePageState extends State<MyHomePage> {
         SlidingUpPanelWidget(
           onStatusChanged: (value) async {
             if (value == SlidingUpPanelStatus.expanded) {
-              Future.delayed(Duration(seconds: 3)).then((value) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => DetailTransaksi()));
+              Future.delayed(const Duration(seconds: 3)).then((value) {
+                var transactionId = const Uuid().v5(Uuid.NAMESPACE_URL, 'gimme');
+                FirebaseFirestore.instance.collection('transactions').add({
+                  'transaction_id': transactionId,
+                  'id_user': widget.sendData['id_user'],
+                  'id_gym': widget.sendData['id_gym'],
+                  'receipt': data['name'],
+                  'type': widget.sendData['type'],
+                  'bundle': widget.sendData['bundle'],
+                  'price': widget.sendData['price'],
+                  'payment_method': dropdownValue,
+                  'date': DateTime.now(),
+                }).then((value) {
+                  Map<String, dynamic> detail = {
+                    'transaction_id': transactionId,
+                    'id_user': widget.sendData['id_user'],
+                    'id_gym': widget.sendData['id_gym'],
+                    'receipt': data['name'],
+                    'type': widget.sendData['type'],
+                    'bundle': widget.sendData['bundle'],
+                    'price': widget.sendData['price'],
+                    'payment_method': dropdownValue,
+                    'date': DateTime.now(),
+                  };
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailTransaksi(
+                        detailTransaksi: detail,
+                      )
+                    )
+                  );
+                });
               });
             }
           },
