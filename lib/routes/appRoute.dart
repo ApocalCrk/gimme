@@ -57,7 +57,7 @@ class AppRoute {
       case workouts:
         return MaterialPageRoute(builder: (_) => const WorkoutsScreen());
       default:
-        return MaterialPageRoute(builder: (_) => const Auth());
+        return MaterialPageRoute(builder: (_) => const StatisticsScreen());
     }
   }
 }

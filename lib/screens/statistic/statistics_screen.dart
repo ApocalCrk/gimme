@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
-import 'package:gimme/screens/statistic/component/statistics_component.dart';
+import 'package:gimme/screens/statistic/component/statistics_daily.dart';
+import 'package:gimme/screens/statistic/component/statistics_monthly.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 const List<String> dropdownPlaceholder = <String>["Daily", "Monthly"];
@@ -62,8 +63,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                     fontFamily: "Montserrat"),
                               ),
                               Text(
-                                _statisticState == dropdownPlaceholder.first
-                                    ? meanDaily!.toStringAsFixed(2) : meanMonthly!.toStringAsFixed(2),
+                                (_statisticState == dropdownPlaceholder.first
+                                        ? meanDaily!.toStringAsFixed(2)
+                                        : meanMonthly!.toStringAsFixed(2)) +
+                                    ' mins',
                                 style: TextStyle(
                                     color: Color(0xff000000),
                                     fontSize: 20,
@@ -76,7 +79,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 color: const Color.fromARGB(255, 255, 255, 255),
-                                border: Border.all(color: Color(0xff707070))),
+                                border: Border.all(color: Colors.black.withOpacity(0.2))),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 8, right: 8),
                               child: DropdownButton(
@@ -111,9 +114,21 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      _statisticState == dropdownPlaceholder.first
-                          ? DailyStatistics()
-                          : MonthlyStatistics(),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.black.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                          child: _statisticState == dropdownPlaceholder.first
+                              ? DailyStatistics()
+                              : MonthlyStatistics(),
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       const Text(
                         'Recent Plan',
@@ -171,13 +186,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                     children: [
                                       TextButton(
                                         onPressed: () {},
-                                        child:
-                                            Text('Change Plan',
-                                                style: TextStyle(
-                                                    color: Color(0xffffffff),
-                                                    fontSize: 15,
-                                                    fontFamily: "Montserrat")),
-                                        )
+                                        child: Text('Change Plan',
+                                            style: TextStyle(
+                                                color: Color(0xffffffff),
+                                                fontSize: 15,
+                                                fontFamily: "Montserrat")),
+                                      )
                                     ],
                                   )
                                 ],
