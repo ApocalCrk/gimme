@@ -4,6 +4,7 @@ import 'package:gimme/screens/explore/explore_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:gimme/screens/statistic/statistics_screen.dart';
 import 'package:gimme/constants.dart';
+import 'package:gimme/screens/profile/profil_screen.dart';
 
 
 class Dashboard extends StatefulWidget {  
@@ -32,6 +33,7 @@ class _DashboardState extends State<Dashboard> {
     DashboardScreen(),
     const StatisticsScreen(),
     const ExploreScreen(),
+    const ProfileScreen(),
   ];
 
   @override
