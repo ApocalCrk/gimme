@@ -2,25 +2,34 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:gimme/screens/statistic/temp_data/data.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
 
 //find max val from listMonthly
 findMaxMonthly() {
   int max = 0;
-  for (int i = 0; i < listMonthly.length; i++) {
-    if (listMonthly[i].duration > max) {
-      max = listMonthly[i].duration;
+  if(listMonthly.length>0){
+    for (int i = 0; i < listMonthly.length; i++) {
+      if (listMonthly[i].duration > max) {
+        max = listMonthly[i].duration;
+      }
     }
+    return max;
+  }else{
+    return 0.0;
   }
-  return max;
 }
 
 //find mean val from listMonthly
 findMonthlyMean() {
   int sum = 0;
-  for (int i = 0; i < listMonthly.length; i++) {
-    sum += listMonthly[i].duration;
+  if(listMonthly.length>0){
+    for (int i = 0; i < listMonthly.length; i++) {
+      sum += listMonthly[i].duration;
+    }
+    return sum / listMonthly.length;
+  }else{
+    return 0.0;
   }
-  return sum / listMonthly.length;
 }
 
 class MonthlyStatistics extends StatefulWidget {
@@ -37,11 +46,29 @@ class _MonthlyStatisticsState extends State<MonthlyStatistics> {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       legend: const Legend(isVisible: false),
-      primaryXAxis: CategoryAxis(
-        majorTickLines: MajorTickLines(width: 0),
-        majorGridLines: MajorGridLines(width: 0),
-        axisLine: AxisLine(width: 0),
-        labelStyle: TextStyle(
+      primaryXAxis: DateTimeAxis(
+        interval: 1,
+        intervalType: DateTimeIntervalType.months,
+        dateFormat: DateFormat.yMMM(),
+        visibleMinimum: 
+        ((){
+          if(listMonthly.length > 0){
+            listMonthly[0].month;
+          }else{
+            DateTime.now().month;
+          }
+        }()),
+        visibleMaximum: (() {
+          if (listMonthly.length > 4) {
+            return listMonthly[0 + 3].month;
+          } else {
+            return listMonthly[listMonthly.length - 1].month;
+          }
+        }()),
+        majorTickLines: const MajorTickLines(width: 0),
+        majorGridLines: const MajorGridLines(width: 0),
+        axisLine: const AxisLine(width: 0),
+        labelStyle: const TextStyle(
           color: Colors.black,
           fontFamily: "Montserrat",
           fontWeight: FontWeight.w600,
@@ -49,23 +76,26 @@ class _MonthlyStatisticsState extends State<MonthlyStatistics> {
         ),
       ),
       primaryYAxis: NumericAxis(
-        majorTickLines: MajorTickLines(width: 0),
-        majorGridLines: MajorGridLines(width: 0),
-        axisLine: AxisLine(width: 0),
-        labelStyle: TextStyle(
+        majorTickLines: const MajorTickLines(width: 0),
+        majorGridLines: const MajorGridLines(width: 0),
+        axisLine: const AxisLine(width: 0),
+        labelStyle: const TextStyle(
           color: Colors.black,
           fontFamily: "Montserrat",
           fontWeight: FontWeight.w600,
           fontSize: 12,
         ),
       ),
+      zoomPanBehavior: ZoomPanBehavior(
+        enablePanning: true,
+      ),
       onTooltipRender: (tooltipArgs) {
         tooltipArgs.text == findMaxMonthly().toString()
-            ? tooltipArgs.text = "${tooltipArgs.text} minutes 🔥"
-            : tooltipArgs.text = "${tooltipArgs.text} minutes";
+            ? tooltipArgs.text = "${tooltipArgs.text} workout(s) 🔥"
+            : tooltipArgs.text = "${tooltipArgs.text} workout(s)";
       },
-      series: <ChartSeries<Statistic_Monthly, String>>[
-        ColumnSeries<Statistic_Monthly, String>(
+      series: <ChartSeries<Statistic_Monthly, DateTime>>[
+        ColumnSeries<Statistic_Monthly, DateTime>(
             dataSource: listMonthly,
             width: 0.5,
             xValueMapper: (Statistic_Monthly data, _) => data.month,

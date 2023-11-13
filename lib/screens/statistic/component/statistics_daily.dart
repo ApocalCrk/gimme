@@ -2,25 +2,34 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:gimme/screens/statistic/temp_data/data.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
 
 //find max val from listdaily
 findMaxDaily() {
   int max = 0;
-  for (int i = 0; i < listDaily.length; i++) {
-    if (listDaily[i].duration > max) {
-      max = listDaily[i].duration;
+  if(listDaily.length>0){
+    for (int i = 0; i < listDaily.length; i++) {
+      if (listDaily[i].duration > max) {
+        max = listDaily[i].duration;
+      }
     }
+    return max;
+  }else{
+    return 0.0;
   }
-  return max;
 }
 
 //find mean val from listdaily
 findDailyMean() {
   int sum = 0;
-  for (int i = 0; i < listDaily.length; i++) {
-    sum += listDaily[i].duration;
+  if(listDaily.length>0){
+    for (int i = 0; i < listDaily.length; i++) {
+      sum += listDaily[i].duration;
+    }
+    return sum / listDaily.length;
+  }else{
+    return 0.0;
   }
-  return sum / listDaily.length;
 }
 
 class DailyStatistics extends StatefulWidget {
@@ -36,11 +45,29 @@ class _DailyStatisticsState extends State<DailyStatistics> {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       legend: Legend(isVisible: false),
-      primaryXAxis: CategoryAxis(
-        majorTickLines: MajorTickLines(width: 0),
-        majorGridLines: MajorGridLines(width: 0),
-        axisLine: AxisLine(width: 0),
-        labelStyle: TextStyle(
+      primaryXAxis: DateTimeAxis(
+        autoScrollingMode: AutoScrollingMode.end,
+        interval: 1,
+        intervalType: DateTimeIntervalType.days,
+        dateFormat: DateFormat.MMMd(),
+        visibleMinimum: (() {
+          if (listDaily.length > 0) {
+            listDaily[0].date;
+          } else {
+            DateTime.now().month;
+          }
+        }()),
+        visibleMaximum: (() {
+          if (listDaily.length > 5) {
+            return listDaily[0 + 4].date;
+          } else {
+            return listDaily[listDaily.length - 1].date;
+          }
+        }()),
+        majorTickLines: const MajorTickLines(width: 0),
+        majorGridLines: const MajorGridLines(width: 0),
+        axisLine: const AxisLine(width: 0),
+        labelStyle: const TextStyle(
           color: Colors.black,
           fontFamily: "Montserrat",
           fontWeight: FontWeight.w600,
@@ -48,23 +75,26 @@ class _DailyStatisticsState extends State<DailyStatistics> {
         ),
       ),
       primaryYAxis: NumericAxis(
-        majorTickLines: MajorTickLines(width: 0),
-        majorGridLines: MajorGridLines(width: 0),
-        axisLine: AxisLine(width: 0),
-        labelStyle: TextStyle(
+        majorTickLines: const MajorTickLines(width: 0),
+        majorGridLines: const MajorGridLines(width: 0),
+        axisLine: const AxisLine(width: 0),
+        labelStyle: const TextStyle(
           color: Colors.black,
           fontFamily: "Montserrat",
           fontWeight: FontWeight.w600,
           fontSize: 12,
         ),
       ),
+      zoomPanBehavior: ZoomPanBehavior(
+        enablePanning: true,
+      ),
       onTooltipRender: (tooltipArgs) {
         tooltipArgs.text == findMaxDaily().toString()
-            ? tooltipArgs.text = "${tooltipArgs.text} minutes 🔥"
-            : tooltipArgs.text = "${tooltipArgs.text} minutes";
+            ? tooltipArgs.text = "${tooltipArgs.text} workout(s) 🔥"
+            : tooltipArgs.text = "${tooltipArgs.text} workout(s)";
       },
-      series: <ChartSeries<Statistic_Daily, String>>[
-        ColumnSeries<Statistic_Daily, String>(
+      series: <ChartSeries<Statistic_Daily, DateTime>>[
+        ColumnSeries<Statistic_Daily, DateTime>(
           dataSource: listDaily,
           width: 0.5,
           xValueMapper: (Statistic_Daily data, _) => data.date,
@@ -80,8 +110,7 @@ class _DailyStatisticsState extends State<DailyStatistics> {
           },
         )
       ],
-      tooltipBehavior: 
-      TooltipBehavior(
+      tooltipBehavior: TooltipBehavior(
           elevation: 5,
           enable: true,
           header: '',

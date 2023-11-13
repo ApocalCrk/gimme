@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/screens/statistic/component/statistics_daily.dart';
 import 'package:gimme/screens/statistic/component/statistics_monthly.dart';
+import 'package:gimme/screens/statistic/temp_data/data.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 const List<String> dropdownPlaceholder = <String>["Daily", "Monthly"];
@@ -66,7 +67,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 (_statisticState == dropdownPlaceholder.first
                                         ? meanDaily!.toStringAsFixed(2)
                                         : meanMonthly!.toStringAsFixed(2)) +
-                                    ' mins',
+                                    ' workout(s)',
                                 style: TextStyle(
                                     color: Color(0xff000000),
                                     fontSize: 20,
@@ -124,9 +125,40 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                          child: _statisticState == dropdownPlaceholder.first
-                              ? DailyStatistics()
-                              : MonthlyStatistics(),
+                          child: 
+                          ((){
+                            if(_statisticState == dropdownPlaceholder.first){
+                              if(listDaily.length>0){
+                                return DailyStatistics();
+                              }else{
+                                return Center(child: Text("Belum ada data statistik",
+                                  style: TextStyle(
+                                    color: Color(0xff000000),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Montserrat"
+                                  ),
+                                ));
+                              }
+                            }else{
+                              if (listMonthly.length > 0) {
+                                return MonthlyStatistics();
+                              } else {
+                                return Center(
+                                    child: Text(
+                                  "Belum ada data statistik",
+                                  style: TextStyle(
+                                      color: Color(0xff000000),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Montserrat"),
+                                ));
+                              }
+                            }
+                          }()),
+                          // _statisticState == dropdownPlaceholder.first
+                          //     ? DailyStatistics()
+                          //     : MonthlyStatistics(),
                         ),
                       ),
                       const SizedBox(height: 20),
