@@ -49,8 +49,6 @@ class UserController extends Controller
         if($user){
             $user->name = $request->input('name');
             $user->email = $request->input('email');
-            $user->password = $request->input('password');
-            $user->profilepicture = $request->input('profilepicture');
             $user->dateofbirth = $request->input('dateofbirth');
             $user->save();
             return response()->json(['status' => 'success'],200);

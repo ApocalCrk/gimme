@@ -23,8 +23,20 @@ Route::prefix('v1')->group(function() {
         Route::post('login', 'App\Http\Controllers\UserController@login');
         Route::post('register', 'App\Http\Controllers\UserController@register');
     });
+    Route::prefix('user')->group(function(){
+        Route::put('updateUser', 'App\Http\Controllers\UserController@updateUser');
+    });
     Route::prefix('gym')->group(function(){
         Route::get('getMapsDetailGym/{lat}/{long}', 'App\Http\Controllers\GymController@getMapsDetailGym');
         Route::get('getDetailGymId/{id}', 'App\Http\Controllers\GymController@getDetailGymId');
+        Route::prefix('review')->group(function(){
+            Route::post('sendGymReview', 'App\Http\Controllers\gymreviewController@sendGymReview');
+            Route::get('getGymReviews/{id}', 'App\Http\Controllers\gymreviewController@getGymReviews');
+            Route::put('updateReview', 'App\Http\Controllers\gymreviewController@updateReview');
+            Route::delete('deleteReview', 'App\Http\Controllers\gymreviewController@deleteReview');
+        });
+    });
+    Route::prefix('transaction')->group(function(){
+        Route::post('sendTransaction', 'App\Http\Controllers\TransactionController@sendTransaction');
     });
 });

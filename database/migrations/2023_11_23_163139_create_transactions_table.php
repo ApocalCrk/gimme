@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('id_gym')->references('id_gym')->on('gym');
             $table->string('payment_method');
             $table->string('payment_status');
-            $table->string('payment_amount');
+            $table->integer('payment_amount');
             $table->string('bundle');
             $table->string('type_membership');
             $table->timestamps();

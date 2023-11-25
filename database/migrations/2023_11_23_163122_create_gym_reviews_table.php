@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('gym_reviews', function (Blueprint $table) {
+            $table->id('id_review');
             $table->foreignId('id_gym')->references('id_gym')->on('gym');
             $table->foreignId('uid')->references('uid')->on('users');
             $table->integer('rating');

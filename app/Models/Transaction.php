@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Membership extends Model
+class Transaction extends Model
 {
     use HasFactory;
-    protected $table = 'membership';
+    protected $primaryKey = 'id_transaction';
     protected $fillable = [
         'uid',
         'id_gym',
-        'id_transaction',
-        'start_date',
-        'end_date'
+        'payment_method',
+        'payment_status',
+        'payment_amount',
+        'bundle',
+        'type_membership'
     ];
 }
