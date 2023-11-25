@@ -166,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            dataUser['username'],
+                            dataUser['name'],
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 25,
@@ -187,35 +187,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ]
                   ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.0)
-                        )
-                      )
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/profile/edit');
-                    },
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.15,
-                      child: const Text(
-                        "Edit",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: "Montserrat",
-                          fontWeight: FontWeight.w600
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0)
+                    )
+                  )
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/profile/edit');
+                },
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width ,
+                  child: const Text(
+                    "Edit",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: "Montserrat",
+                      fontWeight: FontWeight.w600
+                    ),
+                  ),
+                ),
+              ),
 
             ]
           )

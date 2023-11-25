@@ -1,22 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
+import 'package:gimme/screens/auth/model/User.dart';
+import 'package:http/http.dart';
 
 
 class RegisterCredential {
-  credentialRegister(String email, String password, String username, String dateinput, String defaultImage, BuildContext context) {
-    FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password
-    ).then((value) {
-      FirebaseFirestore.instance.collection("users").doc(value.user!.uid).set({
-        "username": username, 
-        "email": email,
-        "dateofbirth": dateinput,
-        "profilepicture": defaultImage,
-        "uid": value.user!.uid
-      }).then((value) {
+  credentialRegister(User user, BuildContext context){
+    var response = post(Uri.http(url, '$endpoint/auth/register'), body: user.toJson());
+    response.then((value) {
+      if(value.statusCode == 200){
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Congrats, your account has been created!"),
@@ -24,14 +16,14 @@ class RegisterCredential {
           )
         );
         Navigator.pushNamed(context, '/auth/signin');
-      });
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: Colors.red,
-        )
-      );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(value.body),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
     });
   }
 }

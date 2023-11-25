@@ -4,6 +4,7 @@ import 'package:gimme/constants.dart';
 import 'package:gimme/screens/dashboard/slicing/maps.dart';
 import 'package:gimme/screens/dashboard/slicing/shortcut.dart';
 import 'package:gimme/screens/dashboard/slicing/subs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class DashboardScreen extends StatelessWidget{
@@ -24,7 +25,7 @@ class DashboardScreen extends StatelessWidget{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Hello, ${dataUser['username']}!",
+                      "Hello, ${dataUser['name']}!",
                       style: const TextStyle(
                         color: Color(0xff000000),
                         fontSize: 20,
@@ -113,8 +114,8 @@ class DashboardScreen extends StatelessWidget{
                           ),
                           onTap: (){
                             // Navigator.pushNamed(context, '/subs');
-                            // Navigator.pushNamed(context, '/auth');
-                            // SharedPreferences.getInstance().then((value) => value.clear());
+                            Navigator.pushNamed(context, '/auth');
+                            SharedPreferences.getInstance().then((value) => value.clear());
                           }
                         )
                       ],

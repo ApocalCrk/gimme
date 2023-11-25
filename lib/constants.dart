@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gson/gson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+const String url = '10.0.2.2:8000';
+const String endpoint = '/api/v1';
 
 const Color primaryColor = Color(0xFF60CEF8);
 const Color primary2Color = Color(0xFFAFB2EC);
@@ -31,6 +35,11 @@ class SharedPref {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getKeys();
   }
+}
+
+String timeStampToDate(Timestamp timestamp) {
+  var date = timestamp.toDate();
+  return "${date.day}/${date.month}/${date.year}";
 }
 
 class ScrollB extends ScrollBehavior {

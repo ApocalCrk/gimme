@@ -43,13 +43,14 @@ class _SignInScreenState extends State<SignInScreen> {
                 ]
               )
             ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 80, left: 20, right: 20, bottom: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 50),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
@@ -101,6 +102,12 @@ class _SignInScreenState extends State<SignInScreen> {
                               color: Colors.grey
                             ),
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your username';
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
@@ -133,141 +140,67 @@ class _SignInScreenState extends State<SignInScreen> {
                               splashColor: Colors.transparent
                             ),
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            return null;
+                          },
                         ),
                         sizedBoxDefault,
                         sizedBoxDefault,
                         sizedBoxDefault
                       ]
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.2,
-                    ),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              CredentialLogin().verifiedCredential(_emailController.text, _passwordController.text, context);
-                            }
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
-                              )
+                  ),
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            CredentialLogin().verifiedCredential(_emailController.text, _passwordController.text, context);
+                          }
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
                             )
+                          )
+                        ),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5)
                           ),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5)
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.only(top: 20, bottom: 20),
-                              child: Text(
-                                "Sign In",
-                                style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 20
-                                )
-                              ),
+                          child: const Padding(
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
+                            child: Text(
+                              "Sign In",
+                              style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20
+                              )
                             ),
                           ),
                         ),
-                        sizedBoxDefault,
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                color: Colors.black.withOpacity(0.2),
-                              ),
+                      ),
+                      sizedBoxDefault,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              color: Colors.black.withOpacity(0.2),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Text(
-                                "Or Login With",
-                                style: TextStyle(
-                                  color: secondaryColor,
-                                  fontSize: 15,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w600
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                color: Colors.black.withOpacity(0.2),
-                              ),
-                            ),
-                          ],
-                        ),
-                        sizedBoxDefault,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.black.withOpacity(0.2),
-                                  width: 1
-                                ),
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
-                                child: IconButton(
-                                onPressed: () {},
-                                icon: Image.asset("assets/images/icon/google.png", width: 100, height: 100),
-                              ),
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xff1877F2),
-                                border: Border.all(
-                                  color: Colors.black.withOpacity(0.2),
-                                  width: 1
-                                ),
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
-                                child: IconButton(
-                                onPressed: () {},
-                                icon: Image.asset("assets/images/icon/facebook.png", width: 100, height: 100),
-                              ),
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.black.withOpacity(0.2),
-                                  width: 2
-                                ),
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
-                                child: IconButton(
-                                onPressed: () {},
-                                icon: Image.asset("assets/images/icon/x.png", width: 100, height: 100),
-                              ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Don't have an account?",
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              "Or Login With",
                               style: TextStyle(
                                 color: secondaryColor,
                                 fontSize: 15,
@@ -275,43 +208,120 @@ class _SignInScreenState extends State<SignInScreen> {
                                 fontWeight: FontWeight.w600
                               ),
                             ),
-                            TextButton(
-                              style: ButtonStyle(
-                                overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent)
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              color: Colors.black.withOpacity(0.2),
+                            ),
+                          ),
+                        ],
+                      ),
+                      sizedBoxDefault,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black.withOpacity(0.2),
+                                width: 1
                               ),
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/auth/signup');
-                              },
-                              child: const Text(
-                                "Sign Up",
-                                style: TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 15,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w600
-                                ),
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
+                              child: IconButton(
+                              onPressed: () {},
+                              icon: Image.asset("assets/images/icon/google.png", width: 100, height: 100),
+                            ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xff1877F2),
+                              border: Border.all(
+                                color: Colors.black.withOpacity(0.2),
+                                width: 1
                               ),
-                            )
-                          ],
-                        ),
-                        sizedBoxDefault,
-                        const Text(
-                          'By continuing, you acknowledge that you have read, and understood and agree to our Privacy policy.',
-                          style: TextStyle(
-                            fontFamily: "Montserrat",
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: secondaryColor
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
+                              child: IconButton(
+                              onPressed: () {},
+                              icon: Image.asset("assets/images/icon/facebook.png", width: 100, height: 100),
+                            ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.black.withOpacity(0.2),
+                                width: 2
+                              ),
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
+                              child: IconButton(
+                              onPressed: () {},
+                              icon: Image.asset("assets/images/icon/x.png", width: 100, height: 100),
+                            ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Don't have an account?",
+                            style: TextStyle(
+                              color: secondaryColor,
+                              fontSize: 15,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w600
+                            ),
+                          ),
+                          TextButton(
+                            style: ButtonStyle(
+                              overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent)
+                            ),
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/auth/signup');
+                            },
+                            child: const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 15,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w600
+                              ),
+                            ),
                           )
-                        )    
-                      ],
-                    )
-                  ],
-                ),
+                        ],
+                      ),
+                      sizedBoxDefault,
+                      const Text(
+                        'By continuing, you acknowledge that you have read, and understood and agree to our Privacy policy.',
+                        style: TextStyle(
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: secondaryColor
+                        )
+                      )    
+                    ],
+                  )
+                ],
               ),
             ),
-          )
-        ),
+          ),
+        )
       ),
     );
   }

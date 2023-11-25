@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -13,14 +14,14 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
 
   @override
   void initState(){
     super.initState();
-    _usernameController.text = dataUser['username'];
+    _nameController.text = dataUser['name'];
     _emailController.text = dataUser['email'];
     _dateController.text = dataUser['dateofbirth'];
   }
@@ -74,7 +75,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    "Username",
+                    "name",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
@@ -95,10 +96,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         fontFamily: "Montserrat",
                         fontWeight: FontWeight.w400
                       ),
-                      controller: _usernameController,
+                      controller: _nameController,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Masukkan Username Anda",
+                        hintText: "Masukkan name Anda",
                         prefixIcon: Icon(Icons.person, color: Color(0xFF707070)),
                         labelStyle: TextStyle(
                           color: secondaryColor,
@@ -212,6 +213,62 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           fontSize: 15,
                           fontFamily: "Montserrat",
                           fontWeight: FontWeight.w400
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)
+                          )
+                        )
+                      ),
+                      onPressed: () {
+                        Map<String, String> body = {
+                          "username": dataUser['username'],
+                          "name": _nameController.text,
+                          "email": _emailController.text,
+                          "dateofbirth": _dateController.text
+                        };
+                        put(Uri.http(url, "$endpoint/user/updateUser"), body: body).then((value) {
+                          if (value.statusCode == 200) {
+                            SharedPref.saveStr('name', _nameController.text);
+                            SharedPref.saveStr('email', _emailController.text);
+                            SharedPref.saveStr('dateofbirth', _dateController.text);
+                            dataUser['name'] = _nameController.text;
+                            dataUser['email'] = _emailController.text;
+                            dataUser['dateofbirth'] = _dateController.text;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Data updated successfully"),
+                                backgroundColor: Colors.green,
+                              )
+                            );
+                            Navigator.pushNamed(context, '/dashboard');
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Failed to update data"),
+                                backgroundColor: Colors.red,
+                              )
+                            );
+                          }
+                        });
+                      },
+                      child: const Text(
+                        "Edit",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: "Montserrat",
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600
                         ),
                       ),
                     ),

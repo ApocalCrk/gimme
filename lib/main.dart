@@ -34,6 +34,7 @@ class _AppScreen extends State<App> {
       var start = await SharedPref.readPrefStr("shortcuts");
       Map<int, Map<dynamic, String>> dataTemp = convertJsonToMap(start);
       var dataUserTemp = {
+        "name": await SharedPref.readPrefStr("name"),
         "username": await SharedPref.readPrefStr("username"),
         "email": await SharedPref.readPrefStr("email"),
         "uid": await SharedPref.readPrefStr("uid"),
