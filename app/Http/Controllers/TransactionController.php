@@ -20,8 +20,18 @@ class TransactionController extends Controller
                 'start_date' => now(),
                 'end_date' => explode(' ', $request->type_membership)[1] == "Month" ? now()->addMonth() : now()->addYear()
             ]);
-            return response()->json(['status' => 'success'], 200);
+            $getTransaction = Transaction::with('gym', 'membership')->where('id_transaction', $transaction->id_transaction)->first();
+            return response()->json(['status' => 'success', 'data' => $getTransaction], 200);
         }catch(\Exception $e){
+            return response()->json(['status' => 'fail'], 401);
+        }
+    }
+
+    public function findMembershipCheck($id_gym, $uid){
+        $membership = Membership::where('id_gym', $id_gym)->where('uid', $uid)->first();
+        if($membership){
+            return response()->json(['status' => 'success', 'data' => $membership], 200);
+        }else{
             return response()->json(['status' => 'fail'], 401);
         }
     }

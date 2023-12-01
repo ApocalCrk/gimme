@@ -19,4 +19,8 @@ class Gym extends Model
         'place',
         'packages'
     ];
+
+    public function gymreviews(){
+        return $this->hasMany(GymReviews::class, 'id_gym', 'id_gym');
+    }
 }

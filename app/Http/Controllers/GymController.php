@@ -11,9 +11,19 @@ class GymController extends Controller
     public function getMapsDetailGym(Request $request){
         $lat = $request->lat;
         $long = $request->long;
-        $gym = Gym::where('location', $lat.', '.$long)->first();
+        $gym = Gym::with('gymreviews')->where('location', $lat.', '.$long)->first();
         if($gym){
-            $gym->image = base64_encode(Storage::disk('public')->get($gym->image));
+            $imagesReview = [];
+            foreach($gym->gymreviews as $value){
+                $images = json_decode($value->images, true);
+                foreach($images as $value){
+                    $imagesReview[] = asset('storage/'.$value);
+                }
+            } 
+            shuffle($imagesReview);
+            $imagesReview = array_slice($imagesReview, 0, 3);
+            $gym->pickImages = $imagesReview;
+            $gym->image = asset('storage/'.$gym->image);
             return response()->json(['status' => 'success', 'data' => $gym],200);
         }else{
             return response()->json(['status' => 'fail'],401);
@@ -21,9 +31,9 @@ class GymController extends Controller
     }
 
     public function getDetailGymId($id) {
-        $gym = Gym::where('id_gym', $id)->first();
+        $gym = Gym::with('gymreviews')->where('id_gym', $id)->first();
         if($gym){
-            $gym->image = base64_encode(Storage::disk('public')->get($gym->image));
+            $gym->image = asset('storage/'.$gym->image);
             return response()->json(['status' => 'success', 'data' => $gym],200);
         }else{
             return response()->json(['status' => 'fail'],401);

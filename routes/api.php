@@ -31,12 +31,15 @@ Route::prefix('v1')->group(function() {
         Route::get('getDetailGymId/{id}', 'App\Http\Controllers\GymController@getDetailGymId');
         Route::prefix('review')->group(function(){
             Route::post('sendGymReview', 'App\Http\Controllers\gymreviewController@sendGymReview');
+            Route::post('uploadImage', 'App\Http\Controllers\gymreviewController@uploadImage');
             Route::get('getGymReviews/{id}', 'App\Http\Controllers\gymreviewController@getGymReviews');
+            Route::get('getReview/{id}/{uid}', 'App\Http\Controllers\gymreviewController@getReview');
             Route::put('updateReview', 'App\Http\Controllers\gymreviewController@updateReview');
             Route::delete('deleteReview', 'App\Http\Controllers\gymreviewController@deleteReview');
         });
     });
     Route::prefix('transaction')->group(function(){
         Route::post('sendTransaction', 'App\Http\Controllers\TransactionController@sendTransaction');
+        Route::get('findMembershipCheck/{id_gym}/{uid}', 'App\Http\Controllers\TransactionController@findMembershipCheck');
     });
 });

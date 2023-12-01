@@ -15,7 +15,7 @@ class UserController extends Controller
         $user = User::where('username', $username)->first();
         if($user){
             if(Hash::check($password, $user->password)){
-                $user->profilepicture = base64_encode(Storage::disk('public')->get($user->profilepicture));
+                $user->profilepicture = asset('storage/'.$user->profilepicture);
                 return response()->json(['status' => 'success', 'data' => $user],200);
             }else{
                 return response()->json(['status' => 'fail'],401);
