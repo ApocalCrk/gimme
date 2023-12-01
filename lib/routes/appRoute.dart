@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
 import 'package:gimme/screens/gym/detail_screen.dart';
+import 'package:gimme/screens/profile/slicing/activity_history.dart';
 import 'package:gimme/screens/transaction_screen/transaction.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:gimme/screens/auth/signup_screen.dart';
@@ -16,7 +17,6 @@ import 'package:gimme/screens/statistic/statistics_screen.dart';
 import 'package:gimme/screens/auth/signin_screen.dart';
 import 'package:gimme/screens/workouts/workouts_sreen.dart';
 import 'package:gimme/screens/auth/auth_screen.dart';
-
 import 'package:gimme/screens/dashboard/maps/maps_screen.dart';
 
 class AppRoute {
@@ -38,6 +38,7 @@ class AppRoute {
   static const String personalData = "/profile/personal_data";
   static const String workouts = "/workouts";
   static const String payment = "/payment";
+  static const String activityHistory = "/profile/activity_history";
 
 
   static Route<dynamic>? generateRoute(RouteSettings settings, {Object? arguments}) {
@@ -66,6 +67,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const BarcodeScannerPageView());
       case personalData:
         return MaterialPageRoute(builder: (_) => const PersonalData());
+      case activityHistory:
+        return MaterialPageRoute(builder: (_) => const ActivityHistory());
       case workouts:
         return MaterialPageRoute(builder: (_) => const WorkoutsScreen());
       case payment:

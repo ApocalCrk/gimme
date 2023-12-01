@@ -5,7 +5,6 @@ import 'package:gimme/screens/explore/explore_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:gimme/screens/statistic/statistics_screen.dart';
 import 'package:gimme/constants.dart';
-import 'package:gimme/screens/profile/profile_screen.dart';
 
 import 'package:gimme/screens/workouts/workouts_sreen.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';

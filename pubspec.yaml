@@ -63,6 +63,8 @@ dependencies:
   gson: ^0.1.6-dev
   geocoding: ^2.1.1
   carousel_slider: ^4.2.1
+  timeline_tile: ^2.0.0
+  flutter_riverpod: ^2.4.9
 
 dev_dependencies:
   flutter_test:

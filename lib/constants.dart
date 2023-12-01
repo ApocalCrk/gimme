@@ -16,6 +16,9 @@ const Color lowSecondaryColor = Color.fromRGBO(5, 5, 5, 0.08);
 Widget sizedBoxDefault = const SizedBox(height: 20);
 var dataUser = {};
 
+const String url = '10.0.2.2:8000';
+const String endpoint = '/v1/api/';
+
 class SharedPref {
   static saveStr(String key, String message) async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
