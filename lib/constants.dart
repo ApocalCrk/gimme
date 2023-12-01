@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gson/gson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const Color primaryColor = Color(0xFF60CEF8);
@@ -11,6 +12,9 @@ const Color sideColor = Color(0xFFD0ECFB);
 const Color lowSuccessColor = Color(0xFFCCF3AE);
 const Color lowPrimaryColor = Color(0xFFAED6F3);
 const Color lowSecondaryColor = Color.fromRGBO(5, 5, 5, 0.08);
+
+Widget sizedBoxDefault = const SizedBox(height: 20);
+var dataUser = {};
 
 class SharedPref {
   static saveStr(String key, String message) async {
@@ -35,6 +39,38 @@ class ScrollB extends ScrollBehavior {
       BuildContext context, Widget child, ScrollableDetails details) {
     return child;
   }
+}
+
+Map<int, Map<dynamic, String>> convertJsonToMap(String jsonString) {
+  var decoded = gson.decode(jsonString);
+  Map<int, Map<dynamic, String>> resultMap = {};
+  decoded.forEach((key, value) {
+    int intKey = int.parse(key);
+    Map<dynamic, String> stringValueMap = {};
+
+    value.forEach((innerKey, innerValue) {
+      stringValueMap[innerKey] = innerValue.toString();
+    });
+
+    resultMap[intKey] = stringValueMap; 
+  });
+
+  return resultMap;
+}
+
+String moneyFormat(int number) {
+  String money = number.toString();
+  String result = "";
+  int count = 0;
+  for (int i = money.length - 1; i >= 0; i--) {
+    count++;
+    result = money[i] + result;
+    if (count == 3 && i != 0) {
+      result = "." + result;
+      count = 0;
+    }
+  }
+  return result;
 }
 
 const Map<int, Map<dynamic, String>> defaultShortcut = {

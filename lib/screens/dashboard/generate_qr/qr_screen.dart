@@ -8,6 +8,7 @@ class QrGeneratorScreen extends StatefulWidget {
   const QrGeneratorScreen({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _QrGeneratorScreenState createState() => _QrGeneratorScreenState();
 }
 
@@ -45,7 +46,7 @@ class _QrGeneratorScreenState extends State<QrGeneratorScreen> {
                     ]
                   )
                 ),
-                const SizedBox(height: 20),
+                sizedBoxDefault,
                 Container(
                   width: MediaQuery.of(context).size.width,
                   padding: const EdgeInsets.all(20),

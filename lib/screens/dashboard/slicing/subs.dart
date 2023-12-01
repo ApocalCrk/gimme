@@ -16,7 +16,7 @@ class Subs extends StatelessWidget {
             Stack(
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width - 60,
+                  width: (MediaQuery.of(context).size.width - 60),
                   height: 200,
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
