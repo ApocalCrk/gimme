@@ -114,6 +114,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             buildCard(context),
             buildCard(context),
             buildCard(context),
+            const SizedBox(height: 100)
           ],
         ),
       ),
@@ -318,7 +319,8 @@ Card buildCard(BuildContext context) {
                 ],
               )),
         ],
-      ));
+      )
+      );
 }
 
 buildBox() {

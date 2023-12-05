@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:ui';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gimme/constants.dart';
+import 'package:gimme/screens/gym/controller/gymController.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:gimme/screens/gym/model/detail_gym.dart';
 
 class GymDetailScreen extends StatefulWidget {
   final int id;
@@ -16,6 +18,7 @@ class GymDetailScreen extends StatefulWidget {
 }
 
 class _GymDetailScreenState extends State<GymDetailScreen> {
+  DetailGym? tempGym;
   Map<String, dynamic>? gym;
   int _currentCarousel = 1;
   double defaultContextSizeCut = 2.5;
@@ -39,13 +42,17 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
   }
 
   getDetailGym(id) async {
-    await FirebaseFirestore.instance.collection('gym')
-    .where('id_gym', isEqualTo: id)
-    .get().then((value) {
-        setState(() {
-          gym = value.docs[0].data();
-          imagesGym = base64Decode(gym?['image']);
-        });
+    GymController().getDetailGymId(id).then((value) {
+      Map<String, dynamic> data = json.decode(value)['data'];
+      Map<String, dynamic> facilities= json.decode(data['facilities'])['facilities'];
+      Map<String, dynamic> packages = json.decode(data['packages'])['package'];
+      data['package'] = packages;
+      data['facilities'] = facilities;
+      setState(() {
+        tempGym = DetailGym.fromJson(data);
+        gym = tempGym?.toJson();
+        imagesGym = base64Decode(gym?['image']);
+      });
     });
   }
 
@@ -225,23 +232,28 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                             ),
                           )
                           :
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: 50,
-                                height: 50,
-                                color: Colors.grey.withOpacity(0.5),
-                                child: const Text(
-                                  "4.8",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: "Montserrat",
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600
+                          InkWell(
+                            onTap:() {
+                              Navigator.pushNamed(context, '/gym/reviews', arguments: widget.id);
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  height: 50,
+                                  color: Colors.grey.withOpacity(0.5),
+                                  child: const Text(
+                                    "4.8",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: "Montserrat",
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600
+                                    ),
                                   ),
                                 ),
                               ),
@@ -368,11 +380,11 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                   ),
                   const SizedBox(height: 20),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Facilities",
                           style: TextStyle(
                             color: Colors.black,
@@ -439,12 +451,12 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(gym?['facilities'][index]['icon'] ?? "", style: const TextStyle(fontSize: 30)),
-                                    SizedBox(height: 10),
+                                    Text(gym?['facilities'][index.toString()]['icon'] ?? "", style: const TextStyle(fontSize: 30)),
+                                    const SizedBox(height: 10),
                                     Text(
-                                      gym?['facilities'][index]['fac'] ?? '',
+                                      gym?['facilities'][index.toString()]['fac'] ?? '',
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.black,
                                         fontFamily: "Montserrat",
                                         fontSize: 14,
@@ -460,11 +472,11 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                       ],
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
-                        const Text(
+                        Text(
                           "Member Packages",
                           style: TextStyle(
                             color: Colors.black,
@@ -552,14 +564,14 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Column(
                                         children: [
-                                          for(var items in gym?['package']['Silver']['feature'])
+                                          for(var items in gym?['package']['Silver']['feature'].entries)
                                             Row(
                                               children: [
-                                                Icon(Icons.check, color: Colors.white, size: 20),
+                                                const Icon(Icons.check, color: Colors.white, size: 20),
                                                 const SizedBox(width: 5),
                                                 Text(
-                                                  items,
-                                                  style: TextStyle(
+                                                  items.value,
+                                                  style: const TextStyle(
                                                     color: Colors.white,
                                                     fontFamily: "Montserrat",
                                                     fontSize: 14,
@@ -580,7 +592,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(gym?['package']['Silver']['price']['monthly'])} / month",
+                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Silver']['price']['monthly']))} / month",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -598,7 +610,17 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 )
                                               )
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, '/gym/checkout', arguments: {
+                                                'id_gym': gym?['id_gym'],
+                                                'bundle': 'Silver Membership',
+                                                'name': gym?['name'],
+                                                'place': gym?['place'],
+                                                'price': gym?['package']['Silver']['price']['monthly'],
+                                                'type': 'Membership',
+                                                'duration': '1 Month Membership'
+                                              });
+                                            },
                                             child: const Text(
                                               "Pay Now",
                                               textAlign: TextAlign.center,
@@ -620,7 +642,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(gym?['package']['Silver']['price']['yearly'])} / year",
+                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Silver']['price']['yearly']))} / year",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -638,16 +660,24 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 )
                                               )
                                             ),
-                                            onPressed: () {},
-                                            child: Container(
-                                              child: const Text(
-                                                "Pay Now",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: "Montserrat",
-                                                  fontWeight: FontWeight.w600
-                                                ),
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, '/gym/checkout', arguments: {
+                                                'id_gym': gym?['id_gym'],
+                                                'bundle': 'Silver Membership',
+                                                'name': gym?['name'],
+                                                'place': gym?['place'],
+                                                'price': gym?['package']['Silver']['price']['yearly'],
+                                                'type': 'Membership',
+                                                'duration': '1 Year Membership'
+                                              });
+                                            },
+                                            child: const Text(
+                                              "Pay Now",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: "Montserrat",
+                                                fontWeight: FontWeight.w600
                                               ),
                                             ),
                                           ),
@@ -707,14 +737,14 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Column(
                                         children: [
-                                          for(var items in gym?['package']['Gold']['feature'])
+                                          for(var items in gym?['package']['Gold']['feature'].entries)
                                             Row(
                                               children: [
-                                                Icon(Icons.check, color: Colors.white, size: 20),
+                                                const Icon(Icons.check, color: Colors.white, size: 20),
                                                 const SizedBox(width: 5),
                                                 Text(
-                                                  items,
-                                                  style: TextStyle(
+                                                  items.value,
+                                                  style: const TextStyle(
                                                     color: Colors.white,
                                                     fontFamily: "Montserrat",
                                                     fontSize: 14,
@@ -735,7 +765,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(gym?['package']['Gold']['price']['monthly'])} / month",
+                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Gold']['price']['monthly']))} / month",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -754,13 +784,14 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                               )
                                             ),
                                             onPressed: () {
-                                              Navigator.pushNamed(context, '/payment', arguments: {
+                                              Navigator.pushNamed(context, '/gym/checkout', arguments: {
                                                 'id_gym': gym?['id_gym'],
-                                                'id_user': dataUser['uid'],
+                                                'bundle': 'Gold Membership',
                                                 'name': gym?['name'],
+                                                'place': gym?['place'],
                                                 'price': gym?['package']['Gold']['price']['monthly'],
-                                                'type': 'Monthly',
-                                                'bundle': 'Gold'
+                                                'type': 'Membership',
+                                                'duration': '1 Month Membership'
                                               });
                                             },
                                             child: const Text(
@@ -784,7 +815,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(gym?['package']['Gold']['price']['yearly'])} / year",
+                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Gold']['price']['yearly']))} / year",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -802,16 +833,24 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 )
                                               )
                                             ),
-                                            onPressed: () {},
-                                            child: Container(
-                                              child: const Text(
-                                                "Pay Now",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: "Montserrat",
-                                                  fontWeight: FontWeight.w600
-                                                ),
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, '/gym/checkout', arguments: {
+                                                'id_gym': gym?['id_gym'],
+                                                'bundle': 'Gold Membership',
+                                                'name': gym?['name'],
+                                                'place': gym?['place'],
+                                                'price': gym?['package']['Gold']['price']['yearly'],
+                                                'type': 'Membership',
+                                                'duration': '1 Year Membership'
+                                              });
+                                            },
+                                            child: const Text(
+                                              "Pay Now",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: "Montserrat",
+                                                fontWeight: FontWeight.w600
                                               ),
                                             ),
                                           ),
@@ -870,14 +909,14 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Column(
                                         children: [
-                                          for(var items in gym?['package']['Bronze']['feature'])
+                                          for(var items in gym?['package']['Bronze']['feature'].entries)
                                             Row(
                                               children: [
-                                                Icon(Icons.check, color: Colors.white, size: 20),
+                                                const Icon(Icons.check, color: Colors.white, size: 20),
                                                 const SizedBox(width: 5),
                                                 Text(
-                                                  items,
-                                                  style: TextStyle(
+                                                  items.value,
+                                                  style: const TextStyle(
                                                     color: Colors.white,
                                                     fontFamily: "Montserrat",
                                                     fontSize: 14,
@@ -898,7 +937,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(gym?['package']['Bronze']['price']['monthly'])} / month",
+                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Bronze']['price']['monthly']))} / month",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -916,7 +955,17 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 )
                                               )
                                             ),
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, '/gym/checkout', arguments: {
+                                                'id_gym': gym?['id_gym'],
+                                                'bundle': 'Bronze Membership',
+                                                'name': gym?['name'],
+                                                'place': gym?['place'],
+                                                'price': gym?['package']['Bronze']['price']['yearly'],
+                                                'type': 'Membership',
+                                                'duration': '1 Month Membership'
+                                              });
+                                            },
                                             child: const Text(
                                               "Pay Now",
                                               textAlign: TextAlign.center,
@@ -938,7 +987,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(gym?['package']['Bronze']['price']['yearly'])} / year",
+                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Bronze']['price']['yearly']))} / year",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -956,16 +1005,24 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 )
                                               )
                                             ),
-                                            onPressed: () {},
-                                            child: Container(
-                                              child: const Text(
-                                                "Pay Now",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: "Montserrat",
-                                                  fontWeight: FontWeight.w600
-                                                ),
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, '/gym/checkout', arguments: {
+                                                'id_gym': gym?['id_gym'],
+                                                'bundle': 'Bronze Membership',
+                                                'name': gym?['name'],
+                                                'place': gym?['place'],
+                                                'price': gym?['package']['Bronze']['price']['yearly'],
+                                                'type': 'Membership',
+                                                'duration': '1 Year Membership'
+                                              });
+                                            },
+                                            child: const Text(
+                                              "Pay Now",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: "Montserrat",
+                                                fontWeight: FontWeight.w600
                                               ),
                                             ),
                                           ),

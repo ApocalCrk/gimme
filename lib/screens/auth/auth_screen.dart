@@ -80,6 +80,7 @@ class _AuthState extends State<Auth> {
                   Padding(
                     padding: const EdgeInsets.only(left: 60, right: 60),
                     child: ElevatedButton(
+                      key: const Key('gosignup'),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(

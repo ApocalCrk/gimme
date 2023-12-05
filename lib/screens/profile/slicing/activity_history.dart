@@ -111,7 +111,6 @@ class _ActivityHistoryState extends State<ActivityHistory> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Center(
-                                    
                                     child: CircleAvatar(
                                       radius: 35,
                                       backgroundImage: NetworkImage(

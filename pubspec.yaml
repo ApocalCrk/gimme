@@ -65,6 +65,7 @@ dependencies:
   carousel_slider: ^4.2.1
   timeline_tile: ^2.0.0
   flutter_riverpod: ^2.4.9
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
@@ -86,9 +87,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - assets/images/avatar/
     - assets/images/icon/
-    - assets/images/gym_images/
     - assets/images/screen/
     - assets/images/workouts_images/
     - assets/images/workouts_images/chest_detail_images/

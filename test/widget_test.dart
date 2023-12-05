@@ -7,24 +7,28 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gimme/screens/auth/auth_screen.dart';
+import 'package:gimme/screens/auth/signup_screen.dart' as signup;
+
 
 import 'package:gimme/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const App());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+   testWidgets('Register Testing', (WidgetTester tester) async {
     await tester.pump();
+    // await tester.tap(find.byKey(const Key('gosignup')));
+    // await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await tester.enterText(find.byKey( const Key('name')), 'Ferdy');
+    await tester.enterText(find.byKey( const Key('email')), 'Ferdy@gmail.com');
+    await tester.enterText(
+        find.byKey(const Key('username')), 'FerdyFirmansyah');
+    await tester.enterText(
+        find.byKey(const Key('password')), 'FerdyFirmansyah123');
+    await tester.enterText(
+        find.byKey(const Key('confirm_password')), 'FerdyFirmansyah123');
+    await tester.tap(find.byKey(const Key('date')));
+    await tester.tap(find.text('OK'));
+    await tester.tap(find.byKey(const Key('signUpButton')));
   });
 }

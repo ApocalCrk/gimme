@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gimme/constants.dart';
+import 'package:gimme/screens/dashboard/maps/controller/mapsController.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -231,17 +231,18 @@ class _MapsScreenState extends State<MapsScreen> with TickerProviderStateMixin {
                             LatLng((gym['latitude']), (gym['longitude']))
                           );
                           var getPlaceDetail = await getPlace((gym['latitude']), (gym['longitude']));
-                          FirebaseFirestore.instance.collection('gym').where('location', isEqualTo: GeoPoint((gym['latitude']), (gym['longitude']))).get().then((value) {
-                            if(value.docs.isNotEmpty){
+                          MapsController().getGymDetail(gym['latitude'], gym['longitude']).then((value) {
+                            var data = json.decode(value)['data'];
+                            if(data != null){
                               setState(() {
-                                selectedGym = value.docs[0].data();
-                                selectedGymImage = base64Decode(value.docs[0].data()['image']);
+                                selectedGym = data;
                                 onSelectedGym = true;
                                 defaultSlideUpPanelHeight = 130;
                                 defaultSlideUpPanelHeightMax = 350;
                                 hiddenSearchMyLocation = true;
                                 gymRegistered = true;
                                 panelController.open();
+                                selectedGymImage = base64Decode(selectedGym['image']);
                               });
                             }else{
                               setState(() {

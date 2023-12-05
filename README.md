@@ -1,16 +1,15 @@
-# gimme
+Nomor Kelompok 5 
 
-A new Flutter project.
+Kelas C
 
-## Getting Started
+Daftar nama lengkap anggota dan NPM
+1. Ferdy Firmansyah (210711480)
+2. I Putu Trisna Budi Utama (210711438)
+3. Fathur Rosid (210711562)
+4. Simon Andrian Agis (210711401)
+5. Hagai Suranta Perangin-angin (200711002)
 
-This project is a starting point for a Flutter application.
+Pembagian tugas dalam mengerjakan UGD API
 
-A few resources to get you started if this is your first Flutter project:
+Semua anggota kelompok mengerjakan semua tugas
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

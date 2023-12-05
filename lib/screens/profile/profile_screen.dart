@@ -24,6 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   
   @override
   Widget build(BuildContext context) {
+    int age = calculateAndPrintAge(dataUser);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -69,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 10),
                     child: Text(
-                      "Yesica Tamara",
+                      dataUser['name'],
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 15,
@@ -107,7 +108,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () =>
+                              Navigator.pushNamed(context, "/profile/edit"),
                     child: const Text(
                       "Edit",
                       style: TextStyle(
@@ -151,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
                         ).createShader(rect),
                         child: Text(
-                          "180 Cm",
+                          '${dataUser['height']} Cm',
                           style: TextStyle(
                             fontSize: 17,
                             fontFamily: "Montserrat",
@@ -197,7 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
                         ).createShader(rect),
                         child: Text(
-                          "65 Kg",
+                         "${dataUser['weight']} Kg ",
                           style: TextStyle(
                             fontSize: 17,
                             fontFamily: "Montserrat",
@@ -243,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
                         ).createShader(rect),
                         child: Text(
-                          "22 Yo",
+                          "$age Yo",
                           style: TextStyle(
                             fontSize: 17,
                             fontFamily: "Montserrat",
@@ -434,7 +436,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             SizedBox(width: 10),
                             Text(
-                              "Personal Data",
+                              "Membership",
                               style: TextStyle(
                                 color: Colors.black.withOpacity(0.6),
                                 fontSize: 15,
@@ -449,7 +451,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 size: 20,
                                 color: Colors.black.withOpacity(0.6),
                               ),
-                              onPressed: () {},
+                              onPressed: () =>
+                              Navigator.pushNamed(context, "/profile/membership"),
                             )
                           ],
                         ),
@@ -504,13 +507,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
                               ).createShader(rect),
                               child: Icon(
-                                Icons.person_outline_rounded,
+                                Icons.notifications_none_outlined,
                                 size: 30,
                               ),
                             ),
                             SizedBox(width: 10),
                             Text(
-                              "Personal Data",
+                              "Notification",
                               style: TextStyle(
                                 color: Colors.black.withOpacity(0.6),
                                 fontSize: 15,
@@ -665,45 +668,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.only(left: 15.0),
-                        child: Row(
-                          children: [
-                            ShaderMask(
-                              blendMode: BlendMode.srcIn,
-                              shaderCallback: (rect) => LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
-                              ).createShader(rect),
-                              child: Icon(
-                                Icons.settings_outlined,
-                                size: 30,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              "Settings",
-                              style: TextStyle(
-                                color: Colors.black.withOpacity(0.6),
-                                fontSize: 15,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Spacer(),
-                            IconButton(
-                              icon: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 20,
-                                color: Colors.black.withOpacity(0.6),
-                              ),
-                              onPressed: () {},
-                            )
-                          ],
-                        ),
-                      ),
-                      
                     ],
                   ),
                 )
@@ -714,5 +678,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+  int calculateAndPrintAge(Map<dynamic, dynamic> dataUser) {
+    String dateOfBirthString = dataUser['dateofbirth'];
+    DateTime dateOfBirth = DateTime.parse(dateOfBirthString);
+
+    int age = _calculateAge(dateOfBirth);
+    return age;
+  }
+
+  int _calculateAge(DateTime birthDate) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - birthDate.year;
+    if (currentDate.month < birthDate.month ||
+        (currentDate.month == birthDate.month && currentDate.day < birthDate.day)) {
+      age--;
+    }
+    return age;
   }
 }
