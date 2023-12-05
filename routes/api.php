@@ -25,6 +25,7 @@ Route::prefix('v1')->group(function() {
     });
     Route::prefix('user')->group(function(){
         Route::put('updateUser', 'App\Http\Controllers\UserController@updateUser');
+        Route::put('updatePhoto/{username}', 'App\Http\Controllers\UserController@updatePhoto');
     });
     Route::prefix('gym')->group(function(){
         Route::get('getMapsDetailGym/{lat}/{long}', 'App\Http\Controllers\GymController@getMapsDetailGym');

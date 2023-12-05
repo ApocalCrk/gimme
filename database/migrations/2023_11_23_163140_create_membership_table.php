@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('id_gym')->references('id_gym')->on('gym');
             $table->foreignId('id_transaction')->references('id_transaction')->on('transactions');
             $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('end_date')->nullable();
             $table->timestamps();
         });
     }
