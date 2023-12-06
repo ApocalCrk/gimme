@@ -1,0 +1,51 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
+
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::prefix('v1')->group(function() {
+    Route::prefix('auth')->group(function(){
+        Route::post('login', 'App\Http\Controllers\UserController@login');
+        Route::post('register', 'App\Http\Controllers\UserController@register');
+    });
+    Route::prefix('user')->group(function(){
+        Route::put('updateUser', 'App\Http\Controllers\UserController@updateUser');
+    });
+    Route::prefix('gym')->group(function(){
+        Route::get('getMapsDetailGym/{lat}/{long}', 'App\Http\Controllers\GymController@getMapsDetailGym');
+        Route::get('getDetailGymId/{id}', 'App\Http\Controllers\GymController@getDetailGymId');
+        Route::prefix('review')->group(function(){
+            Route::post('sendGymReview', 'App\Http\Controllers\gymreviewController@sendGymReview');
+            Route::get('getGymReviews/{id}', 'App\Http\Controllers\gymreviewController@getGymReviews');
+            Route::put('updateReview', 'App\Http\Controllers\gymreviewController@updateReview');
+            Route::delete('deleteReview', 'App\Http\Controllers\gymreviewController@deleteReview');
+        });
+    });
+    Route::prefix('transaction')->group(function(){
+        Route::post('sendTransaction', 'App\Http\Controllers\TransactionController@sendTransaction');
+    });
+    Route::prefix('workout')->group(function(){
+        Route::post('create', 'App\Http\Controllers\ExcerciseTypeController@create');
+        Route::get('getDataExerciseById/{id}', 'App\Http\Controllers\ExcerciseTypeController@getDataExerciseById');
+        Route::get('getAllDataWorkout', 'App\Http\Controllers\ExcerciseTypeController@getAllDataWorkout');
+    });
+    Route::prefix('history_workout')->group(function(){
+        Route::post('sendDataExercises', 'App\Http\Controllers\HistoryExerciseController@sendDataExercises');
+    });
+
+});
