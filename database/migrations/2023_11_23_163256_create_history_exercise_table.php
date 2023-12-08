@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('id_history_exercise');
             $table->foreignId('uid')->references('uid')->on('users');
             $table->foreignId('id_exercise_type')->references('id_exercise_type')->on('exercise_type');
-            $table->string('duration');
-            $table->string('calories');
+            $table->integer('duration');
+            $table->integer('calories');
             $table->timestamps();
         });
     }

@@ -73,6 +73,7 @@ class gymreviewController extends Controller
     public function uploadImage(Request $request){
         $getTempReview = GymReviews::where('id_gym', $request->id_gym)->where('uid', $request->uid)->first();
         $paths = [];
+        print_r($request->all());
         if ($request->hasFile('images')) {
             if($getTempReview->images != null){
                 $images = json_decode($getTempReview->images, true);

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('image');
             $table->json('packages');
             $table->string('place');
+            $table->string('open_close_time');
             $table->timestamps();
         });
     }

@@ -38,6 +38,10 @@ class UserController extends Controller
             $user->password = Hash::make($request->input('password'));
             $user->profilepicture = $request->input('profilepicture');
             $user->dateofbirth = $request->input('dateofbirth');
+            $user->phone_number = $request->input('phone_number');
+            $user->address = $request->input('address');
+            $user->height = $request->input('height');
+            $user->weight = $request->input('weight');
             $user->save();
             return response()->json(['status' => 'success'],200);
         }
@@ -50,7 +54,28 @@ class UserController extends Controller
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->dateofbirth = $request->input('dateofbirth');
+            $user->phone_number = $request->input('phone_number');
+            $user->address = $request->input('address');
+            $user->height = $request->input('height');
+            $user->weight = $request->input('weight');
             $user->save();
+            return response()->json(['status' => 'success'],200);
+        }else{
+            return response()->json(['status' => 'fail'],401);
+        }
+    }
+    public function updatePhoto(Request $request){
+        $username = $request->username;
+        $user = User::where('username', $username)->first();
+        print($user->username);
+        if($user){
+            $file = $request->file('profilepicture');
+            print_r($file);
+            $user->save();
+            $path = $file->store('avatar', 'public');
+            $user->profilepicture = $path;
+            $path = json_decode($path,true); 
+            print_r($path);
             return response()->json(['status' => 'success'],200);
         }else{
             return response()->json(['status' => 'fail'],401);

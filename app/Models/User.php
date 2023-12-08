@@ -24,6 +24,10 @@ class User extends Authenticatable
         'email',
         'password',
         'profilepicture',
-        'dateofbirth'
+        'dateofbirth',
+        'phone_number',
+        'address',
+        'height',
+        'weight'
     ];
 }

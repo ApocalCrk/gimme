@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id('id_exercise_type');
             $table->text('description');
             $table->string('image');
-            $table->longText('exercises');
-            $table->string('name');
+            $table->string('detail_image');
+            $table->json('exercises');
+            $table->string('workout_name');
             $table->text('category');
             $table->timestamps();
         });

@@ -17,7 +17,8 @@ class Gym extends Model
         'location',
         'image',
         'place',
-        'packages'
+        'packages',
+        'open_close_time'
     ];
 
     public function gymreviews(){
