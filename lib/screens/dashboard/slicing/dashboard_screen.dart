@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/screens/dashboard/slicing/maps.dart';
 import 'package:gimme/screens/dashboard/slicing/shortcut.dart';
 import 'package:gimme/screens/dashboard/slicing/subs.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
 class DashboardScreen extends StatelessWidget{
@@ -45,7 +43,7 @@ class DashboardScreen extends StatelessWidget{
                 ),
                 CircleAvatar(
                   backgroundColor: secondaryColor,
-                  backgroundImage: Image.memory(base64Decode(dataUser['photoURL'])).image,
+                  backgroundImage: Image.network(dataUser['photoURL']).image,
                 )
               ],
             )
@@ -95,7 +93,7 @@ class DashboardScreen extends StatelessWidget{
                           ),
                         ),
                         const SizedBox(height: 15),
-                        InkWell(
+                        GestureDetector(
                           child: Container(
                             padding: const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
                             decoration: const BoxDecoration(
@@ -113,9 +111,7 @@ class DashboardScreen extends StatelessWidget{
                             ),
                           ),
                           onTap: (){
-                            // Navigator.pushNamed(context, '/subs');
-                            Navigator.pushNamed(context, '/auth');
-                            SharedPreferences.getInstance().then((value) => value.clear());
+                            Navigator.pushNamed(context, '/subs');
                           }
                         )
                       ],
@@ -149,7 +145,7 @@ class DashboardScreen extends StatelessWidget{
                   ),
                 ),
                 Text(
-                  "See All",
+                  "",
                   style: TextStyle(
                     color: Color(0xff60CEF8),
                     fontSize: 15,
@@ -180,19 +176,19 @@ class DashboardScreen extends StatelessWidget{
                   ),
                 ),
                 TextButton(
-                  child: const Text("Show All",
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/maps');
+                  },
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(Colors.transparent)
+                  ),
+                  child: const Text("Viem Maps",
                     style: TextStyle(
                       color: Color(0xff60CEF8),
                       fontSize: 15,
                       fontFamily: "Montserrat",
                       fontWeight: FontWeight.w600
                     ),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/maps');
-                  },
-                  style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(Colors.transparent)
                   ),
                 )
               ],

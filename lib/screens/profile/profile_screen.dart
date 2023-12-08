@@ -1,226 +1,760 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gimme/constants.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:convert';
-
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:gimme/screens/profile/controller/profileController.dart';
+import 'package:gimme/screens/profile/model/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
-  
   @override
-  // ignore: library_private_types_in_public_api
-  _ProfileScreenState createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  File? selectedImage;
-
-  getImage() async {
-    bool? isCamera = await showDialog(
-      context: context,
-      builder: (context) => SlidingUpPanel(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        color: Colors.white,
-        minHeight: MediaQuery.of(context).size.height * 0.15,
-        maxHeight: MediaQuery.of(context).size.height * 0.15,
-        panel: Column(
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              "Select Image",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontFamily: "Montserrat",
-                fontWeight: FontWeight.w600
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50.0)
-                      )
-                    )
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  },
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: const Text(
-                      "Camera",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: "Montserrat",
-                        fontWeight: FontWeight.w600
-                      ),
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50.0)
-                      )
-                    )
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: const Text(
-                      "Gallery",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: "Montserrat",
-                        fontWeight: FontWeight.w600
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      )
-    );
-
-    if (isCamera == null) return;
-
-    XFile? file = await ImagePicker()
-        .pickImage(source: isCamera ? ImageSource.camera : ImageSource.gallery);
-    selectedImage = File(file!.path);
-    final List<int> imageBytes = await selectedImage!.readAsBytes();
-    final String base64Image = base64Encode(imageBytes);
-    FirebaseFirestore.instance.collection('users').doc(dataUser['uid']).update({
-      'profilepicture': base64Image
-    });
-    setState(() {
-      dataUser['photoURL'] = base64Image;
-    });
+  bool isSwitched = false;
+  final profileController = ProfileController();
+  
+  @override
+  void initState() {
+    super.initState();
   }
-
+  
   @override
   Widget build(BuildContext context) {
+    int age = calculateAndPrintAge(dataUser);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 40),
+          padding: const EdgeInsets.only(top: 40, bottom: 100),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  SizedBox(width: 30),
                   Text(
                     "Profile",
                     style: TextStyle(
-                      color: Colors.black.withOpacity(0.8),
-                      fontSize: 25,
+                      color: Colors.black,
+                      fontSize: 24,
                       fontFamily: "Montserrat",
                       fontWeight: FontWeight.w600
                     ),
                   ),
+                  SizedBox(width: 30)
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 20, top: 20),
+                    child:  CircleAvatar(
+                      radius: 30,
+                      backgroundImage: dataUser['photoURL'] != null
+                          ? NetworkImage(dataUser['photoURL'])
+                          :
+                          NetworkImage(
+                          "https://cdn0-production-images-kly.akamaized.net/tLqQ9BQmDFMQIEm7gYIpZ4jik-4=/0x41:783x482/800x450/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3551902/original/078763900_1629962940-chika01.JPG"),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        dataUser['name'],
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Montserrat",
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10, left: 1),
+                      child: Text(
+                        "Lose a Fat Program",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontFamily: "Montserrat",
+                        ),
+                      ),
+                    )
+                  ]),
+                  const Spacer(),
+                  Container(
+                    margin: const EdgeInsets.only(top: 30, bottom: 15, right: 33),
+                    width: 90,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFF9DCEFF),
+                          Color(0xFF92A3FD)
+                        ], 
+                      ),
+                    ),
+                    child: TextButton(
+                      onPressed: () =>
+                                Navigator.pushNamed(context, "/profile/edit"),
+                      child: const Text(
+                        "Edit",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      InkWell(
-                        child: CircleAvatar(
-                          backgroundColor: secondaryColor,
-                          backgroundImage: Image.memory(base64Decode(dataUser['photoURL']), gaplessPlayback: true).image,
-                          radius: 30,
-                        ),
-                        onTap: () {
-                          getImage();
-                        },
-                      ),
-                      const SizedBox(width: 20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 3),
+                      width: 90,
+                      height: 70,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0.1,
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            dataUser['name'],
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 25,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w500
+                          ShaderMask(
+                            blendMode: BlendMode.srcIn,
+                            shaderCallback: (rect) => LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                            ).createShader(rect),
+                            child: Text(
+                              '${dataUser['height']} Cm',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
+                          SizedBox(height: 10),
                           Text(
-                            dataUser['email'],
-                            style: const TextStyle(
-                              color: secondaryColor,
+                            "Height",
+                            style: TextStyle(
+                              color: Colors.black,
                               fontSize: 15,
                               fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w500
                             ),
                           ),
                         ],
                       ),
-                    ]
-                  ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 3),
+                      width: 90,
+                      height: 70,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0.1,
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ShaderMask(
+                            blendMode: BlendMode.srcIn,
+                            shaderCallback: (rect) => LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                            ).createShader(rect),
+                            child: Text(
+                             "${dataUser['weight']} Kg ",
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "Weight",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontFamily: "Montserrat",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 3),
+                      width: 90,
+                      height: 70,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0.1,
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ShaderMask(
+                            blendMode: BlendMode.srcIn,
+                            shaderCallback: (rect) => LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                            ).createShader(rect),
+                            child: Text(
+                              "$age Yo",
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "Age",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontFamily: "Montserrat",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: 20, right: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0.1,
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(left: 20, top: 20),
+                              child: Text(
+                                "Account",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.person_outline_rounded,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Personal Data",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                onPressed: () =>
+                                Navigator.pushNamed(context, "/profile/personal_data"),
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.sticky_note_2_outlined,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Achievement",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                onPressed: () {},
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.local_activity_outlined,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Activity History",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                onPressed: () =>
+                                Navigator.pushNamed(context, "/profile/activity_history"),
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0, bottom: 20),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.wallet_membership_outlined,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Membership",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                onPressed: () =>
+                                Navigator.pushNamed(context, "/profile/membership"),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0)
-                    )
-                  )
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/profile/edit');
-                },
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width ,
-                  child: const Text(
-                    "Edit",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.w600
+              SizedBox(height: 20),
+              Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: 20, right: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0.1,
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(left: 20, top: 20),
+                          child: Text(
+                            "Notification",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0, bottom: 20),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.notifications_none_outlined,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Notification",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              Container(
+                                margin: EdgeInsets.only(right: 10),
+                                width: 43,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFF9DCEFF),
+                                      Color(0xFF92A3FD)
+                                    ], // Ganti warna sesuai keinginan
+                                  ),
+                                ),
+                                child: Switch(
+                                  value: isSwitched,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isSwitched = value;
+                                    });
+                                  },
+                                  activeTrackColor: Colors.transparent,
+                                  activeColor: Colors.white,
+                                  inactiveTrackColor: Colors.white,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
-
-            ]
-          )
-        )
-      )
+              SizedBox(height: 20),
+              Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: 20, right: 20),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0.1,
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(left: 20, top: 20),
+                              child: Text(
+                                "Other",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.mail_outline_rounded,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Contact Us",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                onPressed: () {},
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.shield_moon_outlined,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Privacy Policy",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                onPressed: () {},
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.logout,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Log out",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Log Out"),
+                                        content: const Text("Are you sure want to log out?"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(context),
+                                            child: const Text("Cancel"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              SharedPreferences.getInstance().then((value) => value.clear());
+                                              Navigator.pop(context);
+                                              Navigator.pushNamedAndRemoveUntil(context, "/auth", (route) => false);
+                                            },
+                                            child: const Text("Log Out"),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  );
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
+  int calculateAndPrintAge(Map<dynamic, dynamic> dataUser) {
+    String dateOfBirthString = dataUser['dateofbirth'];
+    DateTime dateOfBirth = DateTime.parse(dateOfBirthString);
+
+    int age = _calculateAge(dateOfBirth);
+    return age;
+  }
+
+  int _calculateAge(DateTime birthDate) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - birthDate.year;
+    if (currentDate.month < birthDate.month ||
+        (currentDate.month == birthDate.month && currentDate.day < birthDate.day)) {
+      age--;
+    }
+    return age;
+  }
 }
-    

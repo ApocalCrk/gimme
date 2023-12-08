@@ -217,7 +217,7 @@ class AllShortcut extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            InkWell(
+            GestureDetector(
               onTap: () async {
                 var lastKey = shortcut.keys.reduce((a, b) => a > b ? a : b);
                 dataUser['shortcuts'][lastKey + 1] = {
@@ -230,7 +230,7 @@ class AllShortcut extends StatelessWidget {
                 panelController.close();
                 SharedPref.saveStr("shortcuts", gson.encode(dataUser['shortcuts']));
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  Navigator.pushReplacementNamed(context, '/dashboard');
+                  Navigator.popAndPushNamed(context, '/dashboard');
                 });
               },
               child: Column(
@@ -262,7 +262,7 @@ class AllShortcut extends StatelessWidget {
                 ],
               ),
             ),
-            InkWell(
+            GestureDetector(
               onTap: () async {
                 var lastKey = shortcut.keys.reduce((a, b) => a > b ? a : b);
                 dataUser['shortcuts'][lastKey + 1] = {
@@ -275,7 +275,7 @@ class AllShortcut extends StatelessWidget {
                 panelController.close();
                 SharedPref.saveStr("shortcuts", gson.encode(dataUser['shortcuts']));
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  Navigator.pushReplacementNamed(context, '/dashboard');
+                  Navigator.popAndPushNamed(context, '/dashboard');
                 });
               },
               child: Column(
@@ -307,7 +307,7 @@ class AllShortcut extends StatelessWidget {
                 ],
               ),
             ),
-            InkWell(
+            GestureDetector(
               onTap: () async {
                 var lastKey = shortcut.keys.reduce((a, b) => a > b ? a : b);
                 dataUser['shortcuts'][lastKey + 1] = {
@@ -320,7 +320,7 @@ class AllShortcut extends StatelessWidget {
                 panelController.close();
                 SharedPref.saveStr("shortcuts", gson.encode(dataUser['shortcuts']));
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  Navigator.pushReplacementNamed(context, '/dashboard');
+                  Navigator.popAndPushNamed(context, '/dashboard');
                 });
               },
               child: Column(
@@ -352,7 +352,7 @@ class AllShortcut extends StatelessWidget {
                 ],
               ),
             ),
-            InkWell(
+            GestureDetector(
               onTap: () async {
                 var lastKey = shortcut.keys.reduce((a, b) => a > b ? a : b);
                 dataUser['shortcuts'][lastKey + 1] = {
@@ -365,7 +365,7 @@ class AllShortcut extends StatelessWidget {
                 panelController.close();
                 SharedPref.saveStr("shortcuts", gson.encode(dataUser['shortcuts']));
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  Navigator.pushReplacementNamed(context, '/dashboard');
+                  Navigator.popAndPushNamed(context, '/dashboard');
                 });
               },
               child: Column(

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:gimme/constants.dart';
 import 'package:gson/gson.dart';
-import 'package:http/http.dart';
 
 class CredentialLogin {
   verifiedCredential(String username, String password, BuildContext context){
@@ -11,8 +11,9 @@ class CredentialLogin {
       'username': username,
       'password': password
     });
+    
     response.then((value) {
-      if(value.statusCode == 200){
+        if(value.statusCode == 200){
         var user = jsonDecode(value.body)['data'];
         SharedPref.saveStr('name', user['name']);
         SharedPref.saveStr('username', user['username']);
@@ -20,6 +21,10 @@ class CredentialLogin {
         SharedPref.saveStr('uid', user['uid'].toString());
         SharedPref.saveStr('photoURL', user['profilepicture']);
         SharedPref.saveStr('dateofbirth', user['dateofbirth']);
+        SharedPref.saveStr('phoneNumber', user['phone_number']);
+        SharedPref.saveStr('address', user['address']);
+        SharedPref.saveStr('height', user['height']);
+        SharedPref.saveStr('weight', user['weight']);
         SharedPref.saveStr("shortcuts", gson.encode(defaultShortcut));
         dataUser = {
           'name': user['name'],
@@ -28,6 +33,10 @@ class CredentialLogin {
           'uid': user['uid'],
           'photoURL': user['profilepicture'],
           'dateofbirth': user['dateofbirth'],
+          'phoneNumber': user['phone_number'],
+          'address': user['address'],
+          'height': user['height'],
+          'weight': user['weight'],
           'shortcuts': defaultShortcut
         };
         ScaffoldMessenger.of(context).showSnackBar(
@@ -36,7 +45,7 @@ class CredentialLogin {
             backgroundColor: Colors.green,
           )
         );
-        Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false, arguments: 0);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -44,7 +53,7 @@ class CredentialLogin {
             backgroundColor: Colors.red,
           )
         );
-      }
+      } 
     });
   }   
 }

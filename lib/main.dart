@@ -1,15 +1,26 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:gimme/routes/AppRoute.dart';
 import 'package:flutter/services.dart';
 import 'package:gimme/constants.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:gimme/screens/auth/auth_screen.dart';
 import 'package:gimme/screens/dashboard/dashboard.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+          channelKey: 'instant_notification',
+          channelName: 'Basic Instant Notification',
+          channelDescription:
+              'Notification channel that can trigger notification instantly',
+          defaultColor: const Color(0xFF9D50DD),
+          ledColor: Colors.white),
+    ],
+  );
   runApp(const App());
 }
 
@@ -40,6 +51,10 @@ class _AppScreen extends State<App> {
         "uid": await SharedPref.readPrefStr("uid"),
         "photoURL": await SharedPref.readPrefStr("photoURL"),
         "dateofbirth": await SharedPref.readPrefStr("dateofbirth"),
+        "phone_number": await SharedPref.readPrefStr("phone_number"),
+        "address": await SharedPref.readPrefStr("address"),
+        "height": await SharedPref.readPrefStr("height"),
+        "weight": await SharedPref.readPrefStr("weight"),
         "shortcuts": dataTemp
       };
       setState(() {
@@ -56,7 +71,7 @@ class _AppScreen extends State<App> {
       scrollBehavior: ScrollB(),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRoute.generateRoute,
-      home: checkToken == "" ? const Auth() : const Dashboard(),
+      home: checkToken == "" ? const Auth() : const Dashboard()
     );
   }
 }

@@ -67,6 +67,7 @@ class _AuthState extends State<Auth> {
                           child: const Text(
                             "Sign In",
                             style: TextStyle(
+                              color: Colors.white,
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w600,
                               fontSize: 16
@@ -80,6 +81,7 @@ class _AuthState extends State<Auth> {
                   Padding(
                     padding: const EdgeInsets.only(left: 60, right: 60),
                     child: ElevatedButton(
+                      key: const Key('gosignup'),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -102,6 +104,7 @@ class _AuthState extends State<Auth> {
                           child: const Text(
                             "Sign Up",
                             style: TextStyle(
+                              color: Colors.white,
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w600,
                               fontSize: 16
@@ -124,7 +127,7 @@ class _AuthState extends State<Auth> {
                           padding: const EdgeInsets.all(5),
                           child: IconButton(
                           onPressed: () {},
-                          icon: Image.asset("assets/images/icon/google.png", width: 100, height: 100),
+                          icon: Image.asset("assets/images/icon/google.png", width: 30, height: 30, fit: BoxFit.fill),
                         ),
                         ),
                       ),
@@ -138,7 +141,7 @@ class _AuthState extends State<Auth> {
                           padding: const EdgeInsets.all(5),
                           child: IconButton(
                           onPressed: () {},
-                          icon: Image.asset("assets/images/icon/facebook.png", width: 100, height: 100),
+                          icon: Image.asset("assets/images/icon/facebook.png", width: 30, height: 30, fit: BoxFit.fill),
                         ),
                         ),
                       ),
@@ -152,7 +155,7 @@ class _AuthState extends State<Auth> {
                           padding: const EdgeInsets.all(5),
                           child: IconButton(
                           onPressed: () {},
-                          icon: Image.asset("assets/images/icon/x.png", width: 100, height: 100),
+                          icon: Image.asset("assets/images/icon/x.png", width: 30, height: 30, fit: BoxFit.fill),
                         ),
                         ),
                       ),

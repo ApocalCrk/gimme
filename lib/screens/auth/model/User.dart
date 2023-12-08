@@ -6,8 +6,13 @@ class User {
   String? password;
   String? photoUrl;
   String? dateofbirth;
+  String? phoneNumber;
+  String? address;
+  String? height;
+  String? weight;
 
-  User({this.uid, this.email, this.name, this.photoUrl, this.dateofbirth, this.password, this.username});
+
+  User({this.uid, this.email, this.name, this.photoUrl, this.dateofbirth, this.password, this.username,this.phoneNumber,this.address,this.height,this.weight});
 
   User.fromJson(Map<String, dynamic> json) {
     uid = json['uid'];
@@ -17,6 +22,10 @@ class User {
     username = json['username'];
     photoUrl = json['photoUrl'];
     dateofbirth = json['dateofbirth'];
+    phoneNumber = json['phoneNumber'];
+    address = json['address'];
+    height = json['height'];
+    weight = json['weight'];
   }
 
   Map<String, dynamic> toJson() {
@@ -26,7 +35,11 @@ class User {
       'username': username,
       'password': password,
       'profilepicture': photoUrl,
-      'dateofbirth': dateofbirth
+      'dateofbirth': dateofbirth,
+      'phone_number': phoneNumber,
+      'address': address,
+      'height': height,
+      'weight': weight,
     };
   }
 }

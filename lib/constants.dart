@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gson/gson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:retry/retry.dart';
 
 const String url = '10.0.2.2:8000';
 const String endpoint = '/api/v1';
@@ -15,10 +15,12 @@ const Color errorColor = Color(0xFFF3AEBA);
 const Color sideColor = Color(0xFFD0ECFB);
 const Color lowSuccessColor = Color(0xFFCCF3AE);
 const Color lowPrimaryColor = Color(0xFFAED6F3);
+const Color lowPrimary2Color = Color.fromARGB(255, 192, 195, 243);
 const Color lowSecondaryColor = Color.fromRGBO(5, 5, 5, 0.08);
 
 Widget sizedBoxDefault = const SizedBox(height: 20);
 var dataUser = {};
+Map<String, dynamic> tempDataPlan = {};
 
 class SharedPref {
   static saveStr(String key, String message) async {
@@ -37,9 +39,19 @@ class SharedPref {
   }
 }
 
-String timeStampToDate(Timestamp timestamp) {
-  var date = timestamp.toDate();
-  return "${date.day}/${date.month}/${date.year}";
+Widget popUpImage(BuildContext context, String url) {
+  return Dialog(
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.5,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: Image.network(url).image,
+          fit: BoxFit.cover
+        )
+      ),
+    ),
+  );
 }
 
 class ScrollB extends ScrollBehavior {
@@ -75,11 +87,78 @@ String moneyFormat(int number) {
     count++;
     result = money[i] + result;
     if (count == 3 && i != 0) {
-      result = "." + result;
+      result = ".$result";
       count = 0;
     }
   }
   return result;
+}
+
+int generateIDTransaction() {
+  var now = DateTime.now();
+  var id = now.millisecondsSinceEpoch;
+  return id;
+}
+
+Future<bool> loadImageFromUrl(String url) async {
+  try {
+      await retry(
+        () async {
+          Image.network(url);
+        },
+        maxAttempts: 10,
+        delayFactor: const Duration(seconds: 1),
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+}
+
+String formatStringDate(String date) {
+  var dateSplit = date.split("T");
+  var dateSplit2 = dateSplit[0].split("-");
+  var dateSplit3 = dateSplit2[2].split(" ");
+  var month = "";
+  switch (dateSplit2[1]) {
+    case "01":
+      month = "Jan";
+      break;
+    case "02":
+      month = "Feb";
+      break;
+    case "03":
+      month = "Mar";
+      break;
+    case "04":
+      month = "Apr";
+      break;
+    case "05":
+      month = "May";
+      break;
+    case "06":
+      month = "Jun";
+      break;
+    case "07":
+      month = "Jul";
+      break;
+    case "08":
+      month = "Aug";
+      break;
+    case "09":
+      month = "Sep";
+      break;
+    case "10":
+      month = "Oct";
+      break;
+    case "11":
+      month = "Nov";
+      break;
+    case "12":
+      month = "Dec";
+      break;
+  }
+  return "$month ${dateSplit3[0]}, ${dateSplit2[0]}";
 }
 
 const Map<int, Map<dynamic, String>> defaultShortcut = {

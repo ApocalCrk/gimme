@@ -180,6 +180,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Text(
                               "Sign In",
                               style: TextStyle(
+                                color: Colors.white,
                                 fontFamily: 'Montserrat',
                                 fontWeight: FontWeight.w600,
                                 fontSize: 20
@@ -234,7 +235,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
                               child: IconButton(
                               onPressed: () {},
-                              icon: Image.asset("assets/images/icon/google.png", width: 100, height: 100),
+                              icon: Image.asset("assets/images/icon/google.png", width: 30, height: 30, fit: BoxFit.fill),
                             ),
                             ),
                           ),
@@ -251,7 +252,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
                               child: IconButton(
                               onPressed: () {},
-                              icon: Image.asset("assets/images/icon/facebook.png", width: 100, height: 100),
+                              icon: Image.asset("assets/images/icon/facebook.png", width: 30, height: 30, fit: BoxFit.fill),
                             ),
                             ),
                           ),
@@ -268,7 +269,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               padding: const EdgeInsets.only(left: 25, right: 25, top: 5, bottom: 5),
                               child: IconButton(
                               onPressed: () {},
-                              icon: Image.asset("assets/images/icon/x.png", width: 100, height: 100),
+                              icon: Image.asset("assets/images/icon/x.png", width: 30, height: 30, fit: BoxFit.fill),
                             ),
                             ),
                           ),

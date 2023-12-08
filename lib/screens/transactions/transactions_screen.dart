@@ -4,9 +4,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
-import 'package:gimme/screens/transactions/controller/transactionController.dart';
+import 'package:gimme/controller/transactionController.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:gimme/screens/transactions/model/Transaction.dart';
+import 'package:gimme/data/Transaction.dart';
 
 class TransactionScreen extends StatefulWidget {
   final Map<String, dynamic> dataTransaction;
@@ -22,12 +23,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
   bool panel_open = false;
   bool dragPanel = false;
   bool isPanelSlide = false;
+  bool onProgress = false;
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryColor,
+      backgroundColor: primary2Color.withGreen(400),
       body: Stack(
         children: [
           Container(
@@ -194,7 +196,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           TableRow(
                             children: [
                               const Text(
-                                "Package",
+                                "Bundle",
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontFamily: "Montserrat",
@@ -203,7 +205,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 ),
                               ),
                               Text(
-                                "${widget.dataTransaction['package']}",
+                                "${widget.dataTransaction['bundle']}",
                                 textAlign: TextAlign.right,
                                 style: const TextStyle(
                                   color: Colors.black,
@@ -329,7 +331,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
             maxHeight: MediaQuery.of(context).size.height,
             boxShadow: null,
             isDraggable: dragPanel,
-            color: primaryColor,
+            color: primary2Color.withGreen(400),
             onPanelSlide: (pos) {
               setState(() {
                 if(pos > 0) {
@@ -340,19 +342,32 @@ class _TransactionScreenState extends State<TransactionScreen> {
               });
             },
             onPanelOpened: () {
-              Map<String, dynamic> dataTemp = {
-                "uid": dataUser['uid'].toString(),
-                "id_gym": widget.dataTransaction['id_gym'].toString(),
-                "payment_method": widget.dataTransaction['payment_method'],
-                "payment_status": "Paid",
-                "payment_amount": widget.dataTransaction['price'],
-                "bundle": widget.dataTransaction['bundle'],
-                "type_membership": widget.dataTransaction['duration']
-              };
-              TransactionController().sendTransaction(dataTemp).then((value) {
-                var data = jsonDecode(value!);
-                if(data['status'] == 'success'){
-                  Navigator.pushReplacementNamed(context, '/gym/checkout/success', arguments: widget.dataTransaction);
+              setState(() {
+                dragPanel = false;
+                panel_open = true;
+              });
+              var dataTemp = widget.dataTransaction;
+              Transaction transaction = Transaction(
+                id_transaction: generateIDTransaction(),
+                uid: int.parse(dataUser['uid']),
+                id_gym: dataTemp['id_gym'],
+                payment_method: dataTemp['payment_method'],
+                payment_status: "Paid",
+                payment_amount: int.parse(dataTemp['price']),
+                bundle: dataTemp['bundle'],
+                type_membership: dataTemp['duration'],
+              );
+              TransactionController().sendTransaction(transaction).then((value) {
+                var val = jsonDecode(value!);
+                if(val['status'] == 'success'){
+                  onProgress = true;
+                  transaction.gym = val['data']['gym'];
+                  transaction.membership = val['data']['membership'];
+                  transaction.created_at = DateTime.parse(val['data']['created_at']);
+                  transaction.updated_at = DateTime.parse(val['data']['updated_at']);
+                  Future.delayed(const Duration(seconds: 2)).then((_) {
+                    Navigator.pushReplacementNamed(context, '/gym/checkout/success', arguments: transaction);
+                  });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -360,11 +375,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       backgroundColor: Colors.red,
                     )
                   );
+                  Navigator.pop(context);
                 }
-              });
-              setState(() {
-                dragPanel = false;
-                panel_open = true;
               });
             },
             onPanelClosed: () {
@@ -379,27 +391,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 5),
-                      borderRadius: BorderRadius.circular(100)
-                    ),
-                    child: Transform.rotate(
-                      angle: -0.65,
-                      child: const Icon(
-                        Icons.send_rounded,
-                        color: Colors.white,
-                        size: 60
-                      ),
-                    )
+                  Lottie.asset(
+                    'assets/images/icon/success_pay.json',
+                    repeat: false
                   ),
-                  sizedBoxDefault,
-                  sizedBoxDefault,
-                  const Text(
-                    "Sending Payment",
-                    style: TextStyle(
+                  Text(
+                    onProgress ? "Please wait..." : "Payment Success",
+                    style: const TextStyle(
                       color: Colors.white,
                       fontFamily: "Montserrat",
                       fontSize: 25,

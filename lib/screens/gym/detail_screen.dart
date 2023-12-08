@@ -1,17 +1,16 @@
-import 'dart:convert';
 import 'dart:ui';
 import 'package:gimme/constants.dart';
-import 'package:gimme/screens/gym/controller/gymController.dart';
+import 'package:gimme/controller/gymController.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:gimme/screens/gym/model/detail_gym.dart';
+import 'package:gimme/data/detail_gym.dart';
+
+String savedRoute = '/dashboard';
 
 class GymDetailScreen extends StatefulWidget {
-  final int id;
-  const GymDetailScreen({Key? key, required this.id}) : super(key: key);
+  final Map<String, dynamic>? data;
+  const GymDetailScreen({Key? key, this.data}) : super(key: key);
 
   @override
   State<GymDetailScreen> createState() => _GymDetailScreenState();
@@ -19,12 +18,12 @@ class GymDetailScreen extends StatefulWidget {
 
 class _GymDetailScreenState extends State<GymDetailScreen> {
   DetailGym? tempGym;
-  Map<String, dynamic>? gym;
+  DetailGym? gym;
   int _currentCarousel = 1;
   double defaultContextSizeCut = 2.5;
-  Uint8List imagesGym = Uint8List(0);
   final CarouselController _controllerCarousel = CarouselController();
   final ScrollController _scrollController = ScrollController();
+  bool isMembership = false;
 
   Widget buildIndicator(int index) {
     return GestureDetector(
@@ -41,17 +40,34 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
     );
   }
 
-  getDetailGym(id) async {
-    GymController().getDetailGymId(id).then((value) {
-      Map<String, dynamic> data = json.decode(value)['data'];
-      Map<String, dynamic> facilities= json.decode(data['facilities'])['facilities'];
-      Map<String, dynamic> packages = json.decode(data['packages'])['package'];
-      data['package'] = packages;
-      data['facilities'] = facilities;
+  checkMembership() async {
+    var check = await GymController().findMembershipCheck(widget.data!['id'], int.parse(dataUser['uid'].toString()));
+    if(check != null) {
       setState(() {
-        tempGym = DetailGym.fromJson(data);
-        gym = tempGym?.toJson();
-        imagesGym = base64Decode(gym?['image']);
+        isMembership = true;
+      });
+    }
+  }
+
+  String getTotalRating() {
+    double total = 0;
+    int validRatingsCount = 0;
+    for (var element in gym!.gymreviews){
+      if (element.containsKey('rating') && element['rating'] is num) {
+        total += element['rating'];
+        validRatingsCount++;
+      }
+    }
+    if (validRatingsCount == 0) {
+      return "0.0";
+    }
+    return (total / validRatingsCount).toStringAsFixed(1);
+  }
+
+  Future<void> getDetailGym(int id) async {
+    GymController().getDetailGymId(id).then((value) {
+      setState(() {
+        gym = value;
       });
     });
   }
@@ -69,8 +85,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
   @override
   void initState() {
     super.initState();
-    getDetailGym(widget.id);
+    getDetailGym(widget.data!['id']);
     _scrollController.addListener(_scrollListener);
+    checkMembership();
+    widget.data!['route'] == '/dashboard' ? savedRoute = '/dashboard' : savedRoute = '/maps';
   }
 
   @override
@@ -102,10 +120,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                   ),
                 )
                 :
-                Image.memory(
+                Image.network(
+                  gym!.image,
                   height: MediaQuery.of(context).size.height / defaultContextSizeCut,
                   width: MediaQuery.of(context).size.width,
-                  imagesGym,
                   fit: BoxFit.cover,
                   color: Colors.black.withOpacity(0.8),
                   colorBlendMode: BlendMode.darken,
@@ -126,7 +144,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                       child: Center(
                         child: IconButton(
                           onPressed: () async{
-                            Navigator.pop(context);
+                            savedRoute == '/dashboard' ?
+                            Navigator.pushNamed(context, savedRoute, arguments: 3)
+                            :
+                            Navigator.pushNamed(context, savedRoute);
                           },
                           icon: const Icon(Icons.arrow_back_rounded),
                         ),
@@ -171,7 +192,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                             )
                             :
                             Text(
-                              gym?['name'] ?? "",
+                              gym!.name,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontFamily: "Montserrat",
@@ -195,7 +216,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                             )
                             :
                             Text(
-                              gym?['place'] ?? "",
+                              gym!.place,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontFamily: "Montserrat",
@@ -232,9 +253,11 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                             ),
                           )
                           :
-                          InkWell(
+                          GestureDetector(
                             onTap:() {
-                              Navigator.pushNamed(context, '/gym/reviews', arguments: widget.id);
+                              Navigator.pushNamed(context, '/gym/reviews', arguments: {
+                                'id_gym': gym!.id_gym, 'route': '/gym/detail'
+                              });
                             },
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
@@ -245,10 +268,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                   width: 50,
                                   height: 50,
                                   color: Colors.grey.withOpacity(0.5),
-                                  child: const Text(
-                                    "4.8",
+                                  child: Text(
+                                    getTotalRating(),
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontFamily: "Montserrat",
                                       fontSize: 20,
@@ -273,17 +296,41 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Description",
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: "Montserrat",
                             fontSize: 18,
                             fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        gym == null ?
+                        Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            width: 50,
+                            height: 15,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        )
+                        :
+                        Text(
+                          "(${gym!.open_close_time})",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontFamily: "Montserrat",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400
                           ),
                         ),
                       ],
@@ -366,7 +413,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                         :
                         Expanded(
                           child: Text(
-                            gym?['description'] ?? "",
+                            gym!.description,
                             style: const TextStyle(
                               color: secondaryColor,
                               fontFamily: "Montserrat",
@@ -433,7 +480,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                               mainAxisSpacing: 10,
                               childAspectRatio: 1.5,
                             ),
-                            itemCount: gym?['facilities'].length,
+                            itemCount: gym!.facilities.length,
                             itemBuilder: (context, index) {
                               return Container(
                                 height: 50,
@@ -451,10 +498,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(gym?['facilities'][index.toString()]['icon'] ?? "", style: const TextStyle(fontSize: 30)),
+                                    Text(gym!.facilities[index.toString()]['icon'] ?? "", style: const TextStyle(fontSize: 30)),
                                     const SizedBox(height: 10),
                                     Text(
-                                      gym?['facilities'][index.toString()]['fac'] ?? '',
+                                      gym!.facilities[index.toString()]['fac'] ?? '',
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         color: Colors.black,
@@ -472,11 +519,12 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Member Packages",
                           style: TextStyle(
                             color: Colors.black,
@@ -485,6 +533,18 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                             fontWeight: FontWeight.w600
                           ),
                         ),
+                        isMembership ?
+                        const Text(
+                          "You have a membership!",
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontFamily: "Montserrat",
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600
+                          ),
+                        )
+                        :
+                        const SizedBox()
                       ],
                     ),
                   ),
@@ -501,7 +561,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                   )
                   :
                   Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 20),
                     child: CarouselSlider(
                       carouselController: _controllerCarousel,
                       options: CarouselOptions(
@@ -564,7 +624,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Column(
                                         children: [
-                                          for(var items in gym?['package']['Silver']['feature'].entries)
+                                          for(var items in gym!.packages['Silver']['feature'].entries)
                                             Row(
                                               children: [
                                                 const Icon(Icons.check, color: Colors.white, size: 20),
@@ -592,7 +652,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Silver']['price']['monthly']))} / month",
+                                              "Rp. ${moneyFormat(int.parse(gym!.packages['Silver']['price']['monthly']))},00",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -601,6 +661,9 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                               ),
                                             ),
                                           ),
+                                          isMembership ?
+                                          const SizedBox()
+                                          :
                                           ElevatedButton(
                                             style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
@@ -612,19 +675,20 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                             ),
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
-                                                'id_gym': gym?['id_gym'],
+                                                'id_gym': gym!.id_gym,
                                                 'bundle': 'Silver Membership',
-                                                'name': gym?['name'],
-                                                'place': gym?['place'],
-                                                'price': gym?['package']['Silver']['price']['monthly'],
+                                                'name': gym!.name,
+                                                'place': gym!.place,
+                                                'price': gym!.packages['Silver']['price']['monthly'],
                                                 'type': 'Membership',
                                                 'duration': '1 Month Membership'
                                               });
                                             },
                                             child: const Text(
-                                              "Pay Now",
+                                              "Buy Now",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 14,
                                                 fontFamily: "Montserrat",
                                                 fontWeight: FontWeight.w600
@@ -634,6 +698,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                         ],
                                       ),
                                     ),
+                                    isMembership ?
+                                    const SizedBox(height: 20)
+                                    :
+                                    const SizedBox(),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Row(
@@ -642,7 +710,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Silver']['price']['yearly']))} / year",
+                                              "Rp. ${moneyFormat(int.parse(gym!.packages['Silver']['price']['yearly']))},00",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -651,6 +719,9 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                               ),
                                             ),
                                           ),
+                                          isMembership ?
+                                          const SizedBox()
+                                          :
                                           ElevatedButton(
                                             style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFF9DA75)),
@@ -662,19 +733,20 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                             ),
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
-                                                'id_gym': gym?['id_gym'],
+                                                'id_gym': gym!.id_gym,
                                                 'bundle': 'Silver Membership',
-                                                'name': gym?['name'],
-                                                'place': gym?['place'],
-                                                'price': gym?['package']['Silver']['price']['yearly'],
+                                                'name': gym!.name,
+                                                'place': gym!.place,
+                                                'price': gym!.packages['Silver']['price']['yearly'],
                                                 'type': 'Membership',
                                                 'duration': '1 Year Membership'
                                               });
                                             },
                                             child: const Text(
-                                              "Pay Now",
+                                              "Buy Now",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 14,
                                                 fontFamily: "Montserrat",
                                                 fontWeight: FontWeight.w600
@@ -737,7 +809,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Column(
                                         children: [
-                                          for(var items in gym?['package']['Gold']['feature'].entries)
+                                          for(var items in gym!.packages['Gold']['feature'].entries)
                                             Row(
                                               children: [
                                                 const Icon(Icons.check, color: Colors.white, size: 20),
@@ -756,6 +828,9 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                         ],
                                       ),
                                     ),
+                                    isMembership ?
+                                    const SizedBox(height: 20)
+                                    :
                                     const SizedBox(height: 10),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 20, right: 20),
@@ -765,7 +840,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Gold']['price']['monthly']))} / month",
+                                              "Rp. ${moneyFormat(int.parse(gym!.packages['Gold']['price']['monthly']))},00",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -774,6 +849,9 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                               ),
                                             ),
                                           ),
+                                          isMembership ?
+                                          const SizedBox()
+                                          :
                                           ElevatedButton(
                                             style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
@@ -785,19 +863,20 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                             ),
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
-                                                'id_gym': gym?['id_gym'],
+                                                'id_gym': gym!.id_gym,
                                                 'bundle': 'Gold Membership',
-                                                'name': gym?['name'],
-                                                'place': gym?['place'],
-                                                'price': gym?['package']['Gold']['price']['monthly'],
+                                                'name': gym!.name,
+                                                'place': gym!.place,
+                                                'price': gym!.packages['Gold']['price']['monthly'],
                                                 'type': 'Membership',
                                                 'duration': '1 Month Membership'
                                               });
                                             },
                                             child: const Text(
-                                              "Pay Now",
+                                              "Buy Now",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 14,
                                                 fontFamily: "Montserrat",
                                                 fontWeight: FontWeight.w600
@@ -807,6 +886,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                         ],
                                       ),
                                     ),
+                                    isMembership ?
+                                    const SizedBox(height: 20)
+                                    :
+                                    const SizedBox(),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Row(
@@ -815,7 +898,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Gold']['price']['yearly']))} / year",
+                                              "Rp. ${moneyFormat(int.parse(gym!.packages['Gold']['price']['yearly']))},00",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -824,6 +907,9 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                               ),
                                             ),
                                           ),
+                                          isMembership ?
+                                          const SizedBox()
+                                          :
                                           ElevatedButton(
                                             style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFF9DA75)),
@@ -835,19 +921,20 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                             ),
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
-                                                'id_gym': gym?['id_gym'],
+                                                'id_gym': gym!.id_gym,
                                                 'bundle': 'Gold Membership',
-                                                'name': gym?['name'],
-                                                'place': gym?['place'],
-                                                'price': gym?['package']['Gold']['price']['yearly'],
+                                                'name': gym!.name,
+                                                'place': gym!.place,
+                                                'price': gym!.packages['Gold']['price']['yearly'],
                                                 'type': 'Membership',
                                                 'duration': '1 Year Membership'
                                               });
                                             },
                                             child: const Text(
-                                              "Pay Now",
+                                              "Buy Now",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 14,
                                                 fontFamily: "Montserrat",
                                                 fontWeight: FontWeight.w600
@@ -896,7 +983,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                         fontWeight: FontWeight.w700
                                       ),
                                     ),
-                                    const Text(
+                                    isMembership ?
+                                      const SizedBox()
+                                      :
+                                      const Text(
                                       "Membership!",
                                       style: TextStyle(
                                         color: Colors.white,
@@ -909,7 +999,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Column(
                                         children: [
-                                          for(var items in gym?['package']['Bronze']['feature'].entries)
+                                          for(var items in gym!.packages['Bronze']['feature'].entries)
                                             Row(
                                               children: [
                                                 const Icon(Icons.check, color: Colors.white, size: 20),
@@ -928,7 +1018,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(height: 60),
+                                    isMembership ?
+                                    const SizedBox(height: 70)
+                                    :
+                                    const SizedBox(height: 50),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 20, right: 20),
                                       child: Row(
@@ -937,7 +1030,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Bronze']['price']['monthly']))} / month",
+                                              "Rp. ${moneyFormat(int.parse(gym!.packages['Bronze']['price']['monthly']))},00",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -946,6 +1039,9 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                               ),
                                             ),
                                           ),
+                                          isMembership ?
+                                          const SizedBox()
+                                          :
                                           ElevatedButton(
                                             style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
@@ -957,19 +1053,20 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                             ),
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
-                                                'id_gym': gym?['id_gym'],
+                                                'id_gym': gym!.id_gym,
                                                 'bundle': 'Bronze Membership',
-                                                'name': gym?['name'],
-                                                'place': gym?['place'],
-                                                'price': gym?['package']['Bronze']['price']['yearly'],
+                                                'name': gym!.name,
+                                                'place': gym!.place,
+                                                'price': gym!.packages['Bronze']['price']['yearly'],
                                                 'type': 'Membership',
                                                 'duration': '1 Month Membership'
                                               });
                                             },
                                             child: const Text(
-                                              "Pay Now",
+                                              "Buy Now",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 14,
                                                 fontFamily: "Montserrat",
                                                 fontWeight: FontWeight.w600
@@ -979,6 +1076,10 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                         ],
                                       ),
                                     ),
+                                    isMembership ?
+                                    const SizedBox(height: 20)
+                                    :
+                                    const SizedBox(),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                                       child: Row(
@@ -987,7 +1088,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           Container(
                                             margin: const EdgeInsets.only(top: 5),
                                             child: Text(
-                                              "Rp. ${moneyFormat(int.parse(gym?['package']['Bronze']['price']['yearly']))} / year",
+                                              "Rp. ${moneyFormat(int.parse(gym!.packages['Bronze']['price']['yearly']))},00",
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: "Montserrat",
@@ -996,6 +1097,9 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                               ),
                                             ),
                                           ),
+                                          isMembership ?
+                                          const SizedBox()
+                                          :
                                           ElevatedButton(
                                             style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFF9DA75)),
@@ -1007,19 +1111,20 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                             ),
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
-                                                'id_gym': gym?['id_gym'],
+                                                'id_gym': gym!.id_gym,
                                                 'bundle': 'Bronze Membership',
-                                                'name': gym?['name'],
-                                                'place': gym?['place'],
-                                                'price': gym?['package']['Bronze']['price']['yearly'],
+                                                'name': gym!.name,
+                                                'place': gym!.place,
+                                                'price': gym!.packages['Bronze']['price']['yearly'],
                                                 'type': 'Membership',
                                                 'duration': '1 Year Membership'
                                               });
                                             },
                                             child: const Text(
-                                              "Pay Now",
+                                              "Buy Now",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 14,
                                                 fontFamily: "Montserrat",
                                                 fontWeight: FontWeight.w600

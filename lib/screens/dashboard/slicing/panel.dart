@@ -38,7 +38,7 @@ class Panel extends StatelessWidget {
                   fontWeight: FontWeight.w600
                 ),
               ),
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   panelController.close();
                 },

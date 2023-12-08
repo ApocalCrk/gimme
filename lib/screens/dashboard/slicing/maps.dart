@@ -21,21 +21,32 @@ class _MapsState extends State<Maps> {
   Position? _currentPosition;
   final MapController _mapController = MapController();
   List<Map<String, dynamic>> gyms = [];
+  bool _isMounted = false;
 
   @override
   void initState() {
     super.initState();
+    _isMounted = true;
     _getLocation();
+  }
+
+  @override
+  void dispose() {
+    _isMounted = false;
+    _mapController.dispose();
+    super.dispose();
   }
 
   Future<void> _getLocation() async {
     final PermissionStatus status = await Permission.location.request();
     if (status.isGranted) {
       Position position = await getCurrentLocation();
-      setState(() {
-        _currentPosition = position;
-        getNearbyGyms(position.latitude, position.longitude);
-      });
+      if (_isMounted) {
+        setState(() {
+          _currentPosition = position;
+          getNearbyGyms(position.latitude, position.longitude);
+        });
+      }
     }
   }
 
@@ -74,16 +85,11 @@ class _MapsState extends State<Maps> {
         newGyms.add(gymInfo);
       }
     }
-
-    setState(() {
-      gyms = newGyms;
-    });
-  }
-
-  @override
-  void dispose() {
-    _mapController.dispose();
-    super.dispose();
+    if(_isMounted){
+      setState(() {
+        gyms = newGyms;
+      });
+    }
   }
 
   _buildMap() {
@@ -129,9 +135,9 @@ class _MapsState extends State<Maps> {
                   width: 20.0,
                   height: 20.0,
                   point: LatLng(gym['latitude'], gym['longitude']),
-                  builder: (ctx) => InkWell(
+                  builder: (ctx) => GestureDetector(
                     onTap: () async {
-                      print("check");
+                      Navigator.pushNamed(context, '/maps');
                     },
                     child: const Icon(
                       Icons.run_circle,

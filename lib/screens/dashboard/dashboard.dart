@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gimme/screens/dashboard/slicing/dashboard_screen.dart';
+import 'package:gimme/screens/explore/explore_screen.dart';
 import 'package:gimme/screens/profile/profile_screen.dart';
+import 'package:gimme/screens/workout/workout_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:gimme/screens/statistic/statistics_screen.dart';
 import 'package:gimme/constants.dart';
@@ -8,7 +10,8 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:gimme/screens/dashboard/slicing/panel.dart';
 
 class Dashboard extends StatefulWidget {  
-  const Dashboard({Key? key}) : super(key: key);
+  final int index;
+  const Dashboard({Key? key, this.index = 0}) : super(key: key);
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -23,7 +26,10 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(); 
+    _pageController = PageController(
+      initialPage: widget.index,
+    );
+    currentIndex = widget.index;
     readDataShortcuts();
   }
 
@@ -38,8 +44,8 @@ class _DashboardState extends State<Dashboard> {
   var page = [
     const DashboardScreen(),
     const StatisticsScreen(),
-    const StatisticsScreen(),
-    const StatisticsScreen(),
+    const WorkoutsScreen(),
+    const ExploreScreen(),
     const ProfileScreen()
   ];
 
