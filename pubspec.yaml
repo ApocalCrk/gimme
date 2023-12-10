@@ -65,6 +65,7 @@ dependencies:
   syncfusion_flutter_charts: ^23.2.6
   timeline_tile: ^2.0.0
   awesome_notifications: ^0.8.2
+  sprintf: ^7.0.0
   
 
 dev_dependencies:

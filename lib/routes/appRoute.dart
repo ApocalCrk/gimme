@@ -8,6 +8,7 @@ import 'package:gimme/data/Transaction.dart';
 import 'package:gimme/screens/profile/slicing/activity_history.dart';
 import 'package:gimme/screens/profile/slicing/membership.dart';
 import 'package:gimme/screens/profile/slicing/personal_data.dart';
+import 'package:gimme/screens/profile/slicing/todo/todo_detail.dart';
 import 'package:gimme/screens/transactions/transactions_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:gimme/screens/auth/signup_screen.dart';
@@ -21,6 +22,8 @@ import 'package:gimme/screens/auth/auth_screen.dart';
 import 'package:gimme/screens/auth/signin_screen.dart';
 import 'package:gimme/screens/maps/maps_screen.dart';
 import 'package:gimme/screens/transactions/success_transaction_screen.dart';
+import 'package:gimme/screens/profile/slicing/todo/todo_screen.dart';
+// import 'package:gimme/screens/profile/slicing/todo/todo_detail.dart';
 
 class AppRoute {
   static final navigatorKey = GlobalKey<NavigatorState>();
@@ -37,6 +40,8 @@ class AppRoute {
   static const String personalData = "/profile/personal_data";
   static const String activityHistory = "/profile/activity_history";
   static const String allmembership = "/profile/membership";
+  static const String todolist = "/profile/todolist";
+  // static const String todoDetail = "/profile/todolist/detail";
   static const String reviews = "/gym/reviews";
   static const String checkout = "/gym/checkout";
   static const String successCheckout = "/gym/checkout/success";
@@ -80,6 +85,10 @@ class AppRoute {
         return PageTransition(child: const ActivityHistory(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 400));
       case allmembership:
         return PageTransition(child: const MembershipScreen(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 400));
+      case todolist:
+        return PageTransition(child: TodoScreen(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 400));
+      // case todoDetail:
+      //   return PageTransition(child: ToDoDetails(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 400));
       default:
         return PageTransition(child: const Auth(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 400));
     }

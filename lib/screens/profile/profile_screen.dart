@@ -418,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 15.0, bottom: 20),
+                          padding: EdgeInsets.only(left: 15.0),
                           child: Row(
                             children: [
                               ShaderMask(
@@ -452,6 +452,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 onPressed: () =>
                                 Navigator.pushNamed(context, "/profile/membership"),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 15.0, bottom: 20),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (rect) => LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFF9DCEFF),
+                                    Color(0xFF92A3FD)
+                                  ],
+                                ).createShader(rect),
+                                child: Icon(
+                                  Icons.list_alt_outlined,
+                                  size: 30,
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "To-Do List",
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.6),
+                                  fontSize: 15,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Spacer(),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                onPressed: () => Navigator.pushNamed(context, '/profile/todolist'),
                               )
                             ],
                           ),
