@@ -25,7 +25,8 @@ Route::prefix('v1')->group(function() {
     });
     Route::prefix('user')->group(function(){
         Route::put('updateUser', 'App\Http\Controllers\UserController@updateUser');
-        Route::put('updatePhoto/{username}', 'App\Http\Controllers\UserController@updatePhoto');
+        Route::get('findDatabyId/{id}', 'App\Http\Controllers\UserController@findDatabyId');
+        Route::put('updatePhoto/{id}', 'App\Http\Controllers\UserController@updatePhoto');
         Route::get('get7DaysHistory/{uid}', 'App\Http\Controllers\HistoryController@get7DaysHistory');
         Route::get('getAverage7DaysWorkout/{uid}', 'App\Http\Controllers\HistoryController@getAverage7DaysWorkout');
     }); 
