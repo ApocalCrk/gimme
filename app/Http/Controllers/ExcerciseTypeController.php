@@ -10,60 +10,6 @@ use Illuminate\Support\Facades\Storage;
 class ExcerciseTypeController extends Controller
 {
     public function create(){
-        // $data = [
-        //         'description' => 'An abs (abdominal) workout focuses on strengthening the muscles in the core, including the rectus abdominis, obliques, and transverse abdominis. ',
-        //         'workout_name'  => 'Abs Workout',
-        //         'image' => 'abs_images/abs_workout.png',
-        //         'detail_image' =>  'abs_images/abs_detail.png',
-        //         'category' => 'Classic Workout',
-        //         'exercises' => json_encode([
-        //             '1' => [
-        //                 'description_excercise' => 'Sit on the floor, lean back at a 45-degree angle, and lift your feet off the ground. Hold your hands together and twist your torso to touch the floor on each side.', 
-        //                 'name' => 'Rusian Twist',
-        //                 'duration' => '6',
-        //                 'image'=> 'abs_images/rusian_twist.png',
-        //                 'kalori'=> '125',
-        //                 'reps'=> '20',
-        //                 'set'=> '4',
-        //             ],
-        //             '2' => [
-        //                 'description_excercise' => 'Start in a plank position and bring one knee towards your chest, then switch legs in a running motion. Keep your core engaged and maintain a steady pace.', 
-        //                 'name' => 'Mountain Climbers',
-        //                 'duration' => '7',
-        //                 'image'=> 'abs_images/mountain_cliber.png',
-        //                 'kalori'=> '200',
-        //                 'reps'=> '30',
-        //                 'set'=> '5',
-        //             ],
-        //             '3' => [
-        //                 'description_excercise' => 'Lie on your back, legs extended. Lift your legs towards the ceiling, engaging your lower abs. Lower them back down without letting them touch the ground.', 
-        //                 'name' => 'Leg Raises',
-        //                 'duration' => '12',
-        //                 'image'=> 'abs_images/leg_raises.png',
-        //                 'kalori'=> '225',
-        //                 'reps'=> '15',
-        //                 'set'=> '5',
-        //             ],
-        //             '4' => [
-        //                 'description_excercise' => 'Hang from a pull-up bar with straight arms. Lift your legs towards the ceiling, keeping them straight, and then lower them back down without swinging.', 
-        //                 'name' => 'Hanging Leg Raises',
-        //                 'duration' => '15',
-        //                 'image'=> 'abs_images/hanging_legraises.png',
-        //                 'kalori'=> '255',
-        //                 'reps'=> '15',
-        //                 'set'=> '5',
-        //             ],
-        //             '5' => [
-        //                 'description_excercise' => 'Lie on your back with your legs extended. Lift your legs off the ground and perform small, rapid kicks while keeping your lower back pressed into the floor.', 
-        //                 'name' => 'Flutter kicks',
-        //                 'duration' => '10',
-        //                 'image'=> 'abs_images/flutter_kick.png',
-        //                 'kalori'=> '200',
-        //                 'reps'=> '30',
-        //                 'set'=> '5',
-        //             ],
-        //         ]),
-
         $data = [
                 'description' => 'A chest workout is a set of exercises specifically designed to target and strengthen the muscles of the chest. The chest muscles, primarily the pectoralis major and minor, are crucial for various upper body movements, including pushing motions. A well-rounded chest workout typically includes exercises that focus on different areas of the chest, such as the upper, middle, and lower regions.',
                 'workout_name'  => 'Chest Workout',
@@ -117,39 +63,6 @@ class ExcerciseTypeController extends Controller
         $excercise = ExerciseType::create($data);
         return response()->json(['status' => 'success', 'data' => $excercise],200);
     }
-
-    // public function getDataExerciseById(Request $request) {
-    //         $id = $request->id;
-    //         $dataWorkout = ExerciseType::where('id_exercise_type', $id)->first();
-
-    //         if($dataWorkout){
-    //             $exercises = json_decode($dataWorkout->exercises, true);
-    //             foreach($exercises as &$data){
-    //                 $data['image'] = asset('storage/'.$data['image']);
-    //             }
-    //             return response()->json(['status' => 'success', 'data' => $dataWorkout], 200);
-    //         } else {
-    //             return response()->json(['status' => 'fail'], 401);
-    //         }
-    // }
-
-    // public function getAllDataWorkout(){
-    //     $dataWorkout = ExerciseType::all();
-        
-    //     if($dataWorkout){
-    //         foreach($dataWorkout as $dataWorkouts){
-    //             $exercises = json_decode($dataWorkouts->exercises, true);
-    //             foreach($exercises as $data){
-    //                 $data['image'] = asset('storage/'.$data['image']);
-    //             }
-    //             $dataWorkouts->image = asset('storage/'.$dataWorkouts->image);
-    //             $dataWorkouts->detail_image = asset('storage/'.$dataWorkouts->detail_image);
-    //         }
-    //         return response()->json(['status  retrieve all data workout' => 'success', 'data' => $dataWorkout, 'exercises' => $exercises],200);
-    //     }else{
-    //         return response()->json(['status' => 'fail retrieve all data workouts'],401);
-    //     }
-    // }
 
     public function getAllDataWorkout(){
         $dataWorkout = ExerciseType::all();

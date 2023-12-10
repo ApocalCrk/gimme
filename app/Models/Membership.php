@@ -16,4 +16,16 @@ class Membership extends Model
         'start_date',
         'end_date'
     ];
+
+    public function gym(){
+        return $this->belongsTo(Gym::class, 'id_gym', 'id_gym');
+    }
+
+    public function transaction(){
+        return $this->belongsTo(Transaction::class, 'id_transaction', 'id_transaction');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'uid', 'uid');
+    }
 }

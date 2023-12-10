@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('gym', function (Blueprint $table) {
             $table->id('id_gym');
             $table->text('description');
-            $table->longText('facilities');
+            $table->json('facilities');
             $table->string('name');
             $table->string('location');
             $table->string('image');
-            $table->longText('packages');
+            $table->json('packages');
             $table->string('place');
+            $table->string('open_close_time');
             $table->timestamps();
         });
     }

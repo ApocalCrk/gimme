@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('uid')->references('uid')->on('users');
             $table->integer('rating');
             $table->text('description');
+            $table->json('images')->nullable();
             $table->timestamps();
         });
     }

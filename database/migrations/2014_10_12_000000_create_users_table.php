@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('password');
             $table->string('profilepicture');
             $table->date('dateofbirth');
+            $table->string('phone_number');
+            $table->string('address');
+            $table->string('height');
+            $table->string('weight');
             $table->timestamps();
         });
     }

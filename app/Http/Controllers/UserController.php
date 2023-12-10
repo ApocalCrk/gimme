@@ -15,7 +15,7 @@ class UserController extends Controller
         $user = User::where('username', $username)->first();
         if($user){
             if(Hash::check($password, $user->password)){
-                $user->profilepicture = base64_encode(Storage::disk('public')->get($user->profilepicture));
+                $user->profilepicture = asset('storage/'.$user->profilepicture);
                 return response()->json(['status' => 'success', 'data' => $user],200);
             }else{
                 return response()->json(['status' => 'fail'],401);
@@ -38,6 +38,10 @@ class UserController extends Controller
             $user->password = Hash::make($request->input('password'));
             $user->profilepicture = $request->input('profilepicture');
             $user->dateofbirth = $request->input('dateofbirth');
+            $user->phone_number = $request->input('phone_number');
+            $user->address = $request->input('address');
+            $user->height = $request->input('height');
+            $user->weight = $request->input('weight');
             $user->save();
             return response()->json(['status' => 'success'],200);
         }
@@ -50,10 +54,48 @@ class UserController extends Controller
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->dateofbirth = $request->input('dateofbirth');
+            $user->phone_number = $request->input('phone_number');
+            $user->address = $request->input('address');
+            $user->height = $request->input('height');
+            $user->weight = $request->input('weight');
             $user->save();
             return response()->json(['status' => 'success'],200);
         }else{
             return response()->json(['status' => 'fail'],401);
         }
     }
+
+    public function findDatabyId($id){
+        $user = User::find($id)->first();
+        if($user){
+            $user->profilepicture = asset('storage/'.$user->profilepicture);
+            return response()->json(['message' => 'got user', 'data' => $user]);
+        }else{
+            return response()->json(['message' => 'fail', 'data' => $user]);
+        }
+    }
+
+    public function updatePhoto(Request $request, $id)
+    {
+        $user = User::find($id)->first();
+        $previousPhotoPath = $user->profilepicture;
+        if ($request->hasFile('profilepicture')) {
+            $photo = $request->file('profilepicture');
+            $originalName = $photo->getClientOriginalName();
+            $photoPath = $photo->storeAs('public/avatar', $originalName);
+            $photoPath = 'avatar/'.$originalName;
+
+            if ($previousPhotoPath && Storage::exists('public/'.$previousPhotoPath)) {
+                Storage::delete('public/'.$previousPhotoPath);
+            }
+            $user->profilepicture = $photoPath;
+            print_r($user->profilepicture);
+            $user->save();
+            return response()->json(['message' => 'Profile photo updated successfully', 'data' => $user->profilepicture]);
+        }else{
+            print_r($user->profilepicture);
+            return response()->json(['message' => 'Kontol', 'data' => $user->profilepicture]);
+        }
+    }
+    
 }
