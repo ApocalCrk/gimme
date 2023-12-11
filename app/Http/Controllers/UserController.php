@@ -64,21 +64,39 @@ class UserController extends Controller
             return response()->json(['status' => 'fail'],401);
         }
     }
-    public function updatePhoto(Request $request){
-        $username = $request->username;
-        $user = User::where('username', $username)->first();
-        print($user->username);
+    
+    public function findDatabyId($id){
+        $user = User::find($id)->first();
         if($user){
-            $file = $request->file('profilepicture');
-            print_r($file);
-            $user->save();
-            $path = $file->store('avatar', 'public');
-            $user->profilepicture = $path;
-            $path = json_decode($path,true); 
-            print_r($path);
-            return response()->json(['status' => 'success'],200);
+            $user->profilepicture = asset('storage/'.$user->profilepicture);
+            return response()->json(['message' => 'got user', 'data' => $user]);
         }else{
-            return response()->json(['status' => 'fail'],401);
+            return response()->json(['message' => 'fail', 'data' => $user]);
         }
     }
+
+    public function updatePhoto(Request $request, $id)
+    {
+        $user = User::find($id)->first();
+        $previousPhotoPath = $user->profilepicture;
+        if ($request->hasFile('profilepicture')) {
+            $photo = $request->file('profilepicture');
+            $originalName = $photo->getClientOriginalName();
+            $photoPath = $photo->storeAs('public/avatar', $originalName);
+            $photoPath = 'avatar/'.$originalName;
+
+            if ($previousPhotoPath && Storage::exists('public/'.$previousPhotoPath)) {
+                Storage::delete('public/'.$previousPhotoPath);
+            }
+            $user->profilepicture = $photoPath;
+            print_r($user->profilepicture);
+            $user->save();
+            return response()->json(['message' => 'Profile photo updated successfully', 'data' => $user->profilepicture]);
+        }else{
+            print_r($user->profilepicture);
+            return response()->json(['message' => 'Kontol', 'data' => $user->profilepicture]);
+        }
+    }
+
+
 }

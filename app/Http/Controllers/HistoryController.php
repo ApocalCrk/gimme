@@ -46,5 +46,38 @@ class HistoryController extends Controller
     
         return response()->json(['status' => 'success', 'data' => $history], 200);
     }
+
+    public function getAllHistory(Request $request) {
+        $history = HistoryExercise::with(['exerciseType' => function ($query) use ($request) {
+            $query->select(['id_exercise_type', 'workout_name', 'category', 'created_at', 'updated_at']);
+            }])
+            ->where('uid', $request->uid)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return response()->json($history, 200);
+    }
+
+    public function getHistoryByDate(Request $request) {
+        $history = HistoryExercise::with(['exerciseType' => function ($query) use ($request) {
+            $query->select(['id_exercise_type', 'workout_name', 'category', 'created_at', 'updated_at']);
+            }])
+            ->where('uid', $request->uid)->whereDate('created_at', $request->date)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($history, 200);
+    }
+
+    public function getHistoryBySearch(Request $request) {
+        $history = HistoryExercise::with(['exerciseType' => function ($query) use ($request) {
+                $query->select(['id_exercise_type', 'workout_name', 'category', 'created_at', 'updated_at']);
+            }])
+            ->where('uid', $request->uid)
+            ->whereHas('exerciseType', function ($query) use ($request) {
+                $query->where('workout_name', 'like', '%' . $request->search . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($history, 200);
+    }
     
 }

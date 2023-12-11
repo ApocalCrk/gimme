@@ -91,4 +91,50 @@ class TransactionController extends Controller
             return response()->json(['status' => 'fail'], 401);
         }
     }
+
+    public function cancelMembership(Request $request){
+        try{
+            $membership = Membership::where('id', $request->id_membership)->first();
+            if($membership){
+                $membership->delete();
+                return response()->json(['status' => 'success'], 200);
+            }else return response()->json(['status' => 'fail'], 404);
+        } catch(\Exception $e){
+            return response()->json(['status' => 'fail'], 401);
+        }
+    }
+
+    public function getAllTransaction(Request $request){
+        try{
+            $transaction = Transaction::with('gym', 'membership')->where('uid', $request->uid)->orderBy('created_at', 'desc')->paginate(10);
+            return response()->json($transaction, 200);
+        }catch(\Exception $e){
+            return response()->json(['status' => 'fail'], 401);
+        }
+    }
+
+    public function getTransactionBySearch(Request $request){
+        try{
+            $transaction = Transaction::with('gym', 'membership')
+            ->where('uid', $request->uid)
+            ->whereHas('gym', function($query) use ($request){
+                $query->where('name', 'like', '%'.$request->search.'%');
+            })->orderBy('created_at', 'desc')->get();
+            return response()->json($transaction, 200);
+        }catch(\Exception $e){
+            return response()->json(['status' => 'fail'], 401);
+        }
+    }
+
+    public function getTransactionByDate(Request $request){
+        try{
+            $transaction = Transaction::with('gym', 'membership')
+            ->where('uid', $request->uid)
+            ->whereDate('created_at', $request->date)
+            ->orderBy('created_at', 'desc')->get();
+            return response()->json($transaction, 200);
+        }catch(\Exception $e){
+            return response()->json(['status' => 'fail'], 401);
+        }
+    }
 }

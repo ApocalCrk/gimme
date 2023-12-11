@@ -25,9 +25,21 @@ Route::prefix('v1')->group(function() {
     });
     Route::prefix('user')->group(function(){
         Route::put('updateUser', 'App\Http\Controllers\UserController@updateUser');
-        Route::put('updatePhoto/{username}', 'App\Http\Controllers\UserController@updatePhoto');
+        Route::get('findDatabyId/{id}', 'App\Http\Controllers\UserController@findDatabyId');
+        Route::put('updatePhoto/{id}', 'App\Http\Controllers\UserController@updatePhoto');
         Route::get('get7DaysHistory/{uid}', 'App\Http\Controllers\HistoryController@get7DaysHistory');
         Route::get('getAverage7DaysWorkout/{uid}', 'App\Http\Controllers\HistoryController@getAverage7DaysWorkout');
+        Route::get('getAllHistory/{uid}', 'App\Http\Controllers\HistoryController@getAllHistory');
+        Route::get('getHistoryByDate/{uid}/{date}', 'App\Http\Controllers\HistoryController@getHistoryByDate');
+        Route::get('getHistoryBySearch/{uid}/{search}', 'App\Http\Controllers\HistoryController@getHistoryBySearch');
+        Route::get('getAllTransaction/{uid}', 'App\Http\Controllers\TransactionController@getAllTransaction');
+        Route::get('getTransactionBySearch/{uid}/{search}', 'App\Http\Controllers\TransactionController@getTransactionBySearch');
+        Route::get('getTransactionByDate/{uid}/{date}', 'App\Http\Controllers\TransactionController@getTransactionByDate');
+        Route::get('countTask/{uid}', 'App\Http\Controllers\TodoController@countTask');
+        Route::get('getAllTaskbyDate/{uid}/{date}', 'App\Http\Controllers\TodoController@getAllTaskbyDate');
+        Route::post('createTask', 'App\Http\Controllers\TodoController@createTask');
+        Route::put('updateTask/{id}', 'App\Http\Controllers\TodoController@updateTask');
+        Route::delete('deleteTask/{id}', 'App\Http\Controllers\TodoController@deleteTask');
     }); 
     Route::prefix('gym')->group(function(){
         Route::get('getMapsDetailGym/{lat}/{long}', 'App\Http\Controllers\GymController@getMapsDetailGym');
@@ -57,6 +69,7 @@ Route::prefix('v1')->group(function() {
         Route::get('getAllMembership/{uid}', 'App\Http\Controllers\TransactionController@getAllMembership');
         Route::post('generateQrCode', 'App\Http\Controllers\TransactionController@generateQrCode');
         Route::delete('checkoutMembership', 'App\Http\Controllers\TransactionController@checkoutMembership');
+        Route::delete('cancelMembership', 'App\Http\Controllers\TransactionController@cancelMembership');
     });
     Route::prefix('history_workout')->group(function(){
         Route::post('sendDataExercises', 'App\Http\Controllers\HistoryExerciseController@sendDataExercises');
