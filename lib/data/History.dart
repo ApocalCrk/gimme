@@ -1,5 +1,4 @@
 // ignore_for_file: non_constant_identifier_names
-
 class ExerciseData {
   final int duration;
   final int calories;

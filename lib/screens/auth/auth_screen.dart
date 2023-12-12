@@ -114,53 +114,6 @@ class _AuthState extends State<Auth> {
                       ),
                     ),
                   ),
-                  sizedBoxDefault,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: IconButton(
-                          onPressed: () {},
-                          icon: Image.asset("assets/images/icon/google.png", width: 30, height: 30, fit: BoxFit.fill),
-                        ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff1877F2),
-                          borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: IconButton(
-                          onPressed: () {},
-                          icon: Image.asset("assets/images/icon/facebook.png", width: 30, height: 30, fit: BoxFit.fill),
-                        ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: IconButton(
-                          onPressed: () {},
-                          icon: Image.asset("assets/images/icon/x.png", width: 30, height: 30, fit: BoxFit.fill),
-                        ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

@@ -11,20 +11,30 @@ class Subs extends StatelessWidget {
       child: ListView(
         physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
-        children: const [
-          GymCard(
-            title: 'Get Membership',
-            subtitle: 'Practice Anytime, Anywhere at any Gym',
-            backgroundColor: lowPrimary2Color,
-            imagePath: "assets/images/icon/gym-tool.png",
-            margin: EdgeInsets.only(left: 20),
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/maps');
+            },
+            child: const GymCard(
+              title: 'Get Membership',
+              subtitle: 'Practice Anytime, Anywhere at any Gym',
+              backgroundColor: lowPrimary2Color,
+              imagePath: "assets/images/icon/gym-tool.png",
+              margin: EdgeInsets.only(left: 20),
+            ),
           ),
-          GymCard(
-            title: 'Explore Gyms',
-            subtitle: 'Discover New Workout Spaces',
-            backgroundColor: lowPrimaryColor,
-            imagePath: "assets/images/icon/gym-tool.png",
-            margin: EdgeInsets.only(left: 20, right: 20),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/dashboard', arguments: 3);
+            },
+            child: const GymCard(
+              title: 'Explore Gyms',
+              subtitle: 'Discover New Workout Spaces',
+              backgroundColor: lowPrimaryColor,
+              imagePath: "assets/images/icon/gym-tool.png",
+              margin: EdgeInsets.only(left: 20, right: 20),
+            ),
           ),
         ],
       ),

@@ -1,31 +1,29 @@
-// ignore_for_file: library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors
-
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class ActivityHistoryScreen extends StatefulWidget {
-  const ActivityHistoryScreen({Key? key}) : super(key: key);
+class PaymentHistoryScreen extends StatefulWidget {
+  const PaymentHistoryScreen({super.key});
 
   @override
-  _ActivityHistoryScreenState createState() => _ActivityHistoryScreenState();
+  State<PaymentHistoryScreen> createState() => _PaymentHistoryScreenState();
 }
 
-class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
+class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
   List<Map<String, dynamic>> historyData = [];
   int currentPage = 1;
   bool isLoading = false;
   bool isLastPage = false;
-  String selectedDate = 'All time';
   TextEditingController searchController = TextEditingController();
+  String selectedDate = 'All time';
 
   Future<void> searchData(String query) async {
     setState(() {
       isLoading = true;
     });
     final response = await http.get(
-      Uri.http(url, '$endpoint/user/getHistoryBySearch/${dataUser["uid"]}/$query')
+      Uri.http(url, '$endpoint/user/getTransactionBySearch/${dataUser["uid"]}/$query')
     );
     if (response.statusCode == 200) {
       final List<dynamic> historyList = json.decode(response.body);
@@ -41,12 +39,12 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
     }
   }
 
-  Future<void> searchDataByDate(String query) async {
+  Future<void> searchDataByDate(String date) async {
     setState(() {
       isLoading = true;
     });
     final response = await http.get(
-      Uri.http(url, '$endpoint/user/getHistoryByDate/${dataUser["uid"]}/$query')
+      Uri.http(url, '$endpoint/user/getTransactionByDate/${dataUser["uid"]}/$date')
     );
     if (response.statusCode == 200) {
       final List<dynamic> historyList = json.decode(response.body);
@@ -62,7 +60,7 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
     }
   }
 
-  Future<void> fetchData() async {
+  Future<void> getPaymentHistory() async {
     if(currentPage == 1) historyData.clear();
     if (!isLastPage) {
       setState(() {
@@ -70,7 +68,7 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
       });
       
       final response = await http.get(
-        Uri.http(url, '$endpoint/user/getAllHistory/${dataUser["uid"]}', {
+        Uri.http(url, '$endpoint/user/getAllTransaction/${dataUser["uid"]}', {
           'page': currentPage.toString(),
         }),
       );
@@ -96,30 +94,21 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
   }
 
   @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
-
-  @override
   void initState() {
     super.initState();
-    fetchData();
+    getPaymentHistory();
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        scrolledUnderElevation: 0,
-        backgroundColor: const Color(0xffffffff),
+        backgroundColor: Colors.white,
         bottomOpacity: 0.0,
         elevation: 0.0,
         centerTitle: true,
         title: const Text(
-          "Activity History",
+          "Transaction History",
           style: TextStyle(
             color: Colors.black,
             fontSize: 24,
@@ -147,7 +136,7 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                       setState(() {
                         currentPage = 1;
                         isLastPage = false;
-                        fetchData();
+                        getPaymentHistory();
                       });
                     }
                   },
@@ -164,10 +153,10 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                     suffixIcon: searchController.text.isNotEmpty ? GestureDetector(
                       onTap: () {
                         setState(() {
-                          currentPage = 1;
                           searchController.clear();
+                          currentPage = 1;
                           isLastPage = false;
-                          fetchData();
+                          getPaymentHistory();
                         });
                       },
                       child: const Icon(Icons.close_rounded, color: secondaryColor),
@@ -197,9 +186,9 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Filter by date",
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
                           fontFamily: "Montserrat",
@@ -211,9 +200,10 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                           if (selectedDate != 'All time') {
                             setState(() {
                               selectedDate = 'All time';
+                              historyData.clear();
                               currentPage = 1;
                               isLastPage = false;
-                              fetchData();
+                              getPaymentHistory();
                             });
                           }else{
                             showDatePicker(
@@ -263,93 +253,67 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   if (index < historyData.length) {
                     final item = historyData[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            offset: Offset(0, 2),
-                            blurRadius: 5
-                          )
-                        ]
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/profile/transaction_history/detail', arguments: item);
+                      },
+                      child: Row(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                item['exercise_type']['workout_name'],
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w600
-                                ),
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    offset: Offset(0, 2),
+                                    blurRadius: 5
+                                  )
+                                ]
                               ),
-                              Text(
-                                formatStringDate(item['created_at']),
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w600
-                                ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item['gym']['name'],
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontFamily: "Montserrat",
+                                            fontWeight: FontWeight.w600
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          formatStringDate(item['created_at']),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontFamily: "Montserrat",
+                                            fontWeight: FontWeight.w400
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    item['bundle'],
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontFamily: "Montserrat",
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                '🔥 Calories Burned',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w400
-                                ),
-                              ),
-                              Text(
-                                "${item['calories']} kcal",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w400
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                '⏱️ Duration',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w400
-                                ),
-                              ),
-                              Text(
-                                "${item['duration']} minutes",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w400
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -358,7 +322,7 @@ class _ActivityHistoryScreenState extends State<ActivityHistoryScreen> {
                     if (!isLoading && !isLastPage && searchController.text.isEmpty && selectedDate == 'All time') {
                       return GestureDetector(
                         onTap: () {
-                          fetchData();
+                          getPaymentHistory();
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 10),

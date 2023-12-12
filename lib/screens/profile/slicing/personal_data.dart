@@ -12,7 +12,6 @@ class PersonalData extends StatefulWidget {
 }
 
 class _PersonalDataState extends State<PersonalData> {
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -24,7 +23,6 @@ class _PersonalDataState extends State<PersonalData> {
   @override
   void initState() {
     super.initState();
-    _usernameController.text = dataUser['username'];
     _nameController.text = dataUser['name'];
     _emailController.text = dataUser['email'];
     _phoneController.text = dataUser['phoneNumber'];
@@ -39,9 +37,9 @@ class _PersonalDataState extends State<PersonalData> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
-        physics: ClampingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         slivers: [
-          const SliverAppBar(
+          SliverAppBar(
             scrolledUnderElevation: 0,
             backgroundColor: Colors.white,
             elevation: 0,
@@ -50,8 +48,11 @@ class _PersonalDataState extends State<PersonalData> {
             centerTitle: true,
             leading: BackButton(
               color: Colors.black,
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false, arguments: 4);
+              },
             ),
-            title: Text(
+            title: const Text(
               "Personal Data",
               style: TextStyle(
                 color: Colors.black,
@@ -67,8 +68,6 @@ class _PersonalDataState extends State<PersonalData> {
               delegate: SliverChildListDelegate(
                 [
                   buildInformationText(),
-                  const SizedBox(height: 10),
-                  buildTextField("Username", _usernameController, Icons.person),
                   const SizedBox(height: 10),
                   buildTextField("Name", _nameController, Icons.person),
                   const SizedBox(height: 10),
@@ -111,21 +110,13 @@ class _PersonalDataState extends State<PersonalData> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ShaderMask(
-          blendMode: BlendMode.srcIn,
-          shaderCallback: (rect) => const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
-          ).createShader(rect),
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 15,
-              fontFamily: "Montserrat",
-              fontWeight: FontWeight.w600,
-            ),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 15,
+            fontFamily: "Montserrat",
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 10),
@@ -183,21 +174,13 @@ class _PersonalDataState extends State<PersonalData> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ShaderMask(
-          blendMode: BlendMode.srcIn,
-          shaderCallback: (rect) => const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF9DCEFF), Color(0xFF92A3FD)],
-          ).createShader(rect),
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 15,
-              fontFamily: "Montserrat",
-              fontWeight: FontWeight.w600,
-            ),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 15,
+            fontFamily: "Montserrat",
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 10),
@@ -243,13 +226,53 @@ class _PersonalDataState extends State<PersonalData> {
       height: 50,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: primaryColor,
+          backgroundColor: primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
         ),
         onPressed: () {
-          // Implement your button logic here
+          Map<String, String> body = {
+            "username": dataUser['username'],
+            "name": _nameController.text,
+            "email": _emailController.text,
+            "dateofbirth": _dateController.text,
+            "phone_number": _phoneController.text,
+            "address": _addressController.text,
+            "height": _heightController.text,
+            "weight": _weightController.text,
+          };
+            put(Uri.http(url, "$endpoint/user/updateUser"), body: body).then((value) {
+            if (value.statusCode == 200) {
+              SharedPref.saveStr('name', _nameController.text);
+              SharedPref.saveStr('email', _emailController.text);
+              SharedPref.saveStr('phoneNumber', _phoneController.text);
+              SharedPref.saveStr('address', _addressController.text);
+              SharedPref.saveStr('dateofbirth', _dateController.text);
+              SharedPref.saveStr('height', _heightController.text);
+              SharedPref.saveStr('weight', _weightController.text);
+              dataUser['name'] = _nameController.text;
+              dataUser['email'] = _emailController.text;
+              dataUser['phoneNumber'] = _phoneController.text;
+              dataUser['address'] = _addressController.text;
+              dataUser['dateofbirth'] = _dateController.text;
+              dataUser['height'] = _heightController.text;
+              dataUser['weight'] = _weightController.text;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Data updated successfully"),
+                  backgroundColor: Colors.green,
+                )
+              );
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Failed to update data"),
+                  backgroundColor: Colors.red,
+                )
+              );
+            }
+          });
         },
         child: const Text(
           "Edit",

@@ -65,12 +65,15 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
   }
 
   Future<void> getDetailGym(int id) async {
-    GymController().getDetailGymId(id).then((value) {
+  GymController().getDetailGymId(id).then((value) {
+    if (mounted) {
       setState(() {
         gym = value;
       });
-    });
-  }
+    }
+  });
+}
+
 
   void _scrollListener() {
     setState(() {
@@ -88,7 +91,6 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
     getDetailGym(widget.data!['id']);
     _scrollController.addListener(_scrollListener);
     checkMembership();
-    widget.data!['route'] == '/dashboard' ? savedRoute = '/dashboard' : savedRoute = '/maps';
   }
 
   @override
@@ -143,9 +145,9 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                       height: 50,
                       child: Center(
                         child: IconButton(
-                          onPressed: () async{
+                          onPressed: () {
                             savedRoute == '/dashboard' ?
-                            Navigator.pushNamed(context, savedRoute, arguments: 3)
+                            Navigator.pushNamed(context, '/dashboard', arguments: 3)
                             :
                             Navigator.pushNamed(context, savedRoute);
                           },
@@ -487,11 +489,11 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(10),
-                                  boxShadow: const [
+                                  boxShadow: [
                                     BoxShadow(
-                                      color: Colors.transparent, 
-                                      blurRadius: 10.0,
-                                      spreadRadius: 2.0,
+                                      color: lowSecondaryColor.withOpacity(0.05), 
+                                      blurRadius: 5,
+                                      spreadRadius: 0,
                                     ),
                                   ],
                                 ),
@@ -664,15 +666,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           isMembership ?
                                           const SizedBox()
                                           :
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0)
-                                                )
-                                              )
-                                            ),
+                                          TextButton(
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
                                                 'id_gym': gym!.id_gym,
@@ -722,15 +716,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           isMembership ?
                                           const SizedBox()
                                           :
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFF9DA75)),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0)
-                                                )
-                                              )
-                                            ),
+                                          TextButton(
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
                                                 'id_gym': gym!.id_gym,
@@ -852,15 +838,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           isMembership ?
                                           const SizedBox()
                                           :
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0)
-                                                )
-                                              )
-                                            ),
+                                          TextButton(
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
                                                 'id_gym': gym!.id_gym,
@@ -910,15 +888,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           isMembership ?
                                           const SizedBox()
                                           :
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFF9DA75)),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0)
-                                                )
-                                              )
-                                            ),
+                                          TextButton(
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
                                                 'id_gym': gym!.id_gym,
@@ -1042,15 +1012,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           isMembership ?
                                           const SizedBox()
                                           :
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0)
-                                                )
-                                              )
-                                            ),
+                                          TextButton(
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
                                                 'id_gym': gym!.id_gym,
@@ -1100,15 +1062,7 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                           isMembership ?
                                           const SizedBox()
                                           :
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFF9DA75)),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10.0)
-                                                )
-                                              )
-                                            ),
+                                          TextButton(
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/gym/checkout', arguments: {
                                                 'id_gym': gym!.id_gym,

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:gimme/constants.dart';
-import 'package:gimme/screens/statistic/model/History.dart';
+import 'package:gimme/data/History.dart';
 import 'package:http/http.dart';
 
 class StatisticController {

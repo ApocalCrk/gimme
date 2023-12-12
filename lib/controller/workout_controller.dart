@@ -3,7 +3,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:gimme/constants.dart';
-import 'package:gimme/screens/workout/model/workout_model.dart';
+import 'package:gimme/data/workout_model.dart';
 
 class WorkoutController {
   Future<List<Workout>> getAllDataWorkout() async {

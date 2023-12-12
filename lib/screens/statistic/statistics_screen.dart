@@ -1,9 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api, must_be_immutable, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
-import 'package:gimme/screens/statistic/controller/statisticController.dart';
-import 'package:gimme/screens/statistic/model/History.dart';
+import 'package:gimme/controller/statisticController.dart';
+import 'package:gimme/data/History.dart';
+import 'package:gimme/controller/workout_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -29,6 +31,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     _isMounted = true;
     getAverageWorkout();
     getExerciseData();
+    if(tempDataPlan.isNotEmpty) {
+      if(tempDataPlan['status'] == 'start') {
+        startTimer();
+      } else {
+        stopTimer();
+      }
+    }
   }
 
   @override
@@ -36,6 +45,81 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     _isMounted = false;
     super.dispose();
   }
+
+  Timer? _timer;
+  int timerStart = 0;
+  int elapsedTime = 0;
+
+  
+
+  void startTimer() {
+    timerStart = int.parse(tempDataPlan['duration']) * 60;
+    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+      if (timerStart == 0) {
+        setState(() {
+          WorkoutController().sendDataToApi(
+            int.parse(dataUser['uid'].toString()),
+            tempDataPlan['id_workout'],
+            tempDataPlan['kalori'],
+            tempDataPlan['duration'],
+          );
+          getExerciseData();
+          getAverageWorkout();
+          tempDataPlan = {};
+          Notify(
+            title: '${tempDataPlan['exercise_name']} Finished',
+            body: 'You have finished your workout',
+            channelKey: 'gimme-channel',
+          ).instantNotify();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Workout Finished',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontFamily: "Montserrat",
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              backgroundColor: successColor,
+            ),
+          );
+        });
+        _timer!.cancel();
+      } else if (tempDataPlan['status'] == 'start') {
+        if(_isMounted){
+          setState(() {
+            timerStart--;
+            elapsedTime++;
+          });
+        }
+      }
+    });
+  }
+
+  void stopTimer() {
+    _timer!.cancel();
+  }
+
+  void pauseTimer() {
+    setState(() {
+      tempDataPlan['status'] = 'start';
+    });
+  }
+
+  void resumeTimer() {
+    setState(() {
+      tempDataPlan['status'] = 'pause';
+    });
+  }
+
+  String getDisplayedTime() {
+    int minutes = elapsedTime ~/ 60;
+    int seconds = elapsedTime % 60;
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
 
   getExerciseData() async {
     var data = await StatisticController().getExerciseData(int.parse(dataUser['uid'].toString()));
@@ -50,7 +134,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     var data = await StatisticController().getAverage7DaysWorkout(int.parse(dataUser['uid'].toString()));
     if (_isMounted) {
       setState(() {
-        averageWorkout = data;
+        if(data == '0') {
+          averageWorkout = '0';
+        } else {
+          if(data.length >= 2) {
+            averageWorkout = data.padLeft(2, '0');
+          } else {
+            averageWorkout = data;
+          }
+        }
       });
     }
   }
@@ -124,7 +216,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   intervalType: DateTimeIntervalType.days,
                 ),
                 primaryYAxis: NumericAxis(
-                  interval: 30,
                   axisLine: const AxisLine(width: 0), 
                 ),
                 trackballBehavior: TrackballBehavior(
@@ -138,7 +229,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       fontFamily: "Montserrat"
                     ),
                     canShowMarker: false,
-
                   ),
                   markerSettings: const TrackballMarkerSettings(
                     markerVisibility: TrackballVisibilityMode.auto,
@@ -202,13 +292,35 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Full Chest Workout',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  tempDataPlan['exercise_name'],
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: "Montserrat",
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      stopTimer();
+                                      tempDataPlan = {};
+                                    });
+                                  },
+                                  child: const Text(
+                                    'Stop',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: "Montserrat",
+                                      fontWeight: FontWeight.w500
+                                    ),
+                                  )
+                                )
+                              ],
                             ),
                             const SizedBox(height: 5),
                             Row(
@@ -217,7 +329,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      '50 Min',
+                                      _timer == null ?
+                                      '00:00'
+                                      :
+                                      getDisplayedTime(),
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -227,7 +342,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                     ),
                                     const SizedBox(width: 10),
                                     Text(
-                                      '🔥 500 Calories',
+                                      '🔥 ${int.parse(tempDataPlan['duration']) - elapsedTime ~/ 60} Minutes Left',
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 10,
@@ -238,7 +353,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   ],
                                 ),
                                 Text(
-                                  'Est. 20 Min',
+                                  'Est. ${tempDataPlan['duration']} Min',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
@@ -251,7 +366,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             const SizedBox(height: 10),
                             LinearPercentIndicator(
                               width: MediaQuery.of(context).size.width * 0.7,
-                              animation: true,
                               alignment: MainAxisAlignment.center,
                               padding: const EdgeInsets.only(left: 10, right: 10),
                               leading: const Text(
@@ -273,7 +387,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                 ),
                               ),
                               lineHeight: 18,
-                              percent: 0.5,
+                              percent: elapsedTime / int.parse(tempDataPlan['duration']) / 60,
                               barRadius: Radius.circular(10),
                               backgroundColor: Colors.white,
                               progressColor: successColor
@@ -282,25 +396,43 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  tempDataPlan['status'] == 'pause' ?
-                                  'Start'
-                                  :
-                                  'On Going',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontFamily: "Montserrat",
-                                    fontWeight: FontWeight.w500
+                                GestureDetector(
+                                  onTap: () {
+                                    if(tempDataPlan['status'] == 'start') {
+                                      resumeTimer();
+                                    } else {
+                                      pauseTimer();
+                                    }
+                                  },
+                                  child: Text(
+                                    tempDataPlan['status'] == 'pause' ?
+                                    'Start'
+                                    :
+                                    'On Going',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontFamily: "Montserrat",
+                                      fontWeight: FontWeight.w500
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  'Change Plane',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontFamily: "Montserrat",
-                                    fontWeight: FontWeight.w500
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      '/dashboard',
+                                      arguments: 2
+                                    );
+                                  },
+                                  child: Text(
+                                    'Change Plan',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontFamily: "Montserrat",
+                                      fontWeight: FontWeight.w500
+                                    ),
                                   ),
                                 )
                               ],

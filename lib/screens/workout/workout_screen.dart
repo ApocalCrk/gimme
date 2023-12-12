@@ -1,10 +1,13 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:gimme/screens/workout/controller/workout_controller.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:gimme/constants.dart';
+import 'package:gimme/controller/workout_controller.dart';
 import 'package:gimme/screens/workout/detail_workout.dart';
-import 'package:gimme/screens/workout/model/workout_model.dart';
+import 'package:gimme/data/workout_model.dart';
 import 'package:gimme/screens/workout/workout_components/workout_item.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
 class WorkoutsScreen extends StatefulWidget {
@@ -46,65 +49,48 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
           future: WorkoutController().getAllDataWorkout(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Column(
-                children: [
-                  Shimmer.fromColors(
+              return ListView.builder(
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      height: 100,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
+                    child: WorkoutItem(
+                      image: "",
+                      workout_name: "",
+                      workout_type: "",
+                      id_workout: 0,
                     ),
-                  ),
-                  Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      height: 100,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      height: 100,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      height: 100,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                }
               );
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
+              if(snapshot.data!.isEmpty) {
+                return Transform.translate(
+                  offset: const Offset(0, -50),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset("assets/images/screen/notfound.svg", width: 150, height: 150),
+                        sizedBoxDefault,
+                        const Text(
+                          "Workouts Not Found",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 24,
+                            fontFamily: "Montserrat",
+                            fontWeight: FontWeight.w600
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                    
+                );
+              }
               return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {

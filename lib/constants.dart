@@ -1,9 +1,12 @@
+import 'dart:math';
+
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gson/gson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:retry/retry.dart';
 
-const String url = '10.0.2.2:8000';
+const String url = '9f2f-182-253-176-44.ngrok-free.app';
 const String endpoint = '/api/v1';
 
 const Color primaryColor = Color(0xFF60CEF8);
@@ -46,7 +49,7 @@ Widget popUpImage(BuildContext context, String url) {
       height: MediaQuery.of(context).size.height * 0.5,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: Image.network(url).image,
+          image: ExtendedImage.network(url).image,
           fit: BoxFit.cover
         )
       ),
@@ -100,19 +103,34 @@ int generateIDTransaction() {
   return id;
 }
 
-Future<bool> loadImageFromUrl(String url) async {
-  try {
-      await retry(
-        () async {
-          Image.network(url);
-        },
-        maxAttempts: 10,
-        delayFactor: const Duration(seconds: 1),
-      );
-      return true;
-    } catch (e) {
-      return false;
-    }
+class Notify {
+  final AwesomeNotifications awesomeNotifications = AwesomeNotifications();
+  String title;
+  String body;
+  String channelKey;
+
+  Notify({
+    required this.title,
+    required this.body,
+    required this.channelKey,
+  });
+
+  Future<bool> instantNotify() async {
+    return awesomeNotifications.createNotification(
+      content: NotificationContent(
+        id: Random().nextInt(999999),
+        channelKey: channelKey,
+        title: title,
+        body: body,
+      ),
+    );
+  }
+}
+
+String getTimeOnDate(String date) {
+  var dateSplit = date.split("T");
+  var dateSplit2 = dateSplit[1].split(".");
+  return dateSplit2[0];
 }
 
 String formatStringDate(String date) {
@@ -187,3 +205,10 @@ const Map<int, Map<dynamic, String>> defaultShortcut = {
     "route": "/cardio"
   },
 };
+
+const List<Map<String, dynamic>> contact = [
+  {
+    "name": "Ferdy Firmansyah",
+    "instagram": "ferdyfrms"
+  }
+];

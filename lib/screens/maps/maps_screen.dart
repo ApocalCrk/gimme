@@ -1,5 +1,4 @@
 // ignore_for_file: unnecessary_null_comparison
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,6 +9,7 @@ import 'package:gimme/screens/gym/detail_screen.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:extended_image/extended_image.dart';
 
 class MapsScreen extends StatefulWidget {
   const MapsScreen({super.key});
@@ -331,10 +331,44 @@ class _MapsScreenState extends State<MapsScreen> with TickerProviderStateMixin {
                         radius: 50,
                         backgroundColor: Colors.transparent,
                         child: ClipOval( 
-                          child: CachedNetworkImage(
-                            imageUrl: selectedGym.image!,
-                            placeholder: (context, url) => const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                          child: ExtendedImage.network(
+                            selectedGym.image!,
+                            fit: BoxFit.cover,
+                            cache: true,
+                            borderRadius: BorderRadius.circular(50),
+                            shape: BoxShape.rectangle,
+                            loadStateChanged: (ExtendedImageState state) {
+                              switch (state.extendedImageLoadState) {
+                                case LoadState.loading:
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                case LoadState.completed:
+                                  return ExtendedRawImage(
+                                    image: state.extendedImageInfo?.image,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  );
+                                case LoadState.failed:
+                                  return Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.error,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  );
+                                default:
+                                  return const SizedBox();
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -429,31 +463,53 @@ class _MapsScreenState extends State<MapsScreen> with TickerProviderStateMixin {
                                   onTap: () async {
                                     await showDialog(context: context, builder: (_) => popUpImage(context, selectedGym.pickImages![index]));
                                   },
-                                  child: FutureBuilder(
-                                    future: loadImageFromUrl(selectedGym.pickImages![index]),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Container(
-                                          margin: const EdgeInsets.only(right: 10),
-                                          width: MediaQuery.of(context).size.width * 0.3,
-                                          height: 100,
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[300],
-                                            borderRadius: BorderRadius.circular(5),
-                                            image: DecorationImage(
-                                              image: NetworkImage(selectedGym.pickImages![index]),
-                                              fit: BoxFit.cover
-                                            )
-                                          ),
-                                        );
-                                      } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
+                                  child: ExtendedImage.network(
+                                    selectedGym.pickImages![index],
+                                    fit: BoxFit.cover,
+                                    cache: true,
+                                    borderRadius: BorderRadius.circular(5),
+                                    shape: BoxShape.rectangle,
+                                    loadStateChanged: (ExtendedImageState state) {
+                                      switch (state.extendedImageLoadState) {
+                                        case LoadState.loading:
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        case LoadState.completed:
+                                          return Container(
+                                            margin: const EdgeInsets.only(right: 20),
+                                            child: ExtendedRawImage(
+                                              image: state.extendedImageInfo?.image,
+                                              width: MediaQuery.of(context).size.width * 0.3,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          );
+                                        case LoadState.failed:
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              await showDialog(context: context, builder: (_) => popUpImage(context, selectedGym.pickImages![index]));
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context).size.width - 40,
+                                              height: 100,
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[300],
+                                                borderRadius: BorderRadius.circular(5),
+                                              ),
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.error,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        default:
+                                          return const SizedBox();
                                       }
                                     },
                                   ),
-                                  
                                 );
                               },
                             )
@@ -485,7 +541,9 @@ class _MapsScreenState extends State<MapsScreen> with TickerProviderStateMixin {
                   const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
-                      savedRoute = '/maps';
+                      setState(() { 
+                        savedRoute = '/maps';
+                      });
                       Navigator.pushNamed(context, '/gym/detail', arguments: {'id': selectedGym.id_gym, 'route': '/maps'}); 
                     },
                     child: Container(

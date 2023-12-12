@@ -1,10 +1,7 @@
 // ignore_for_file: camel_case_types, must_be_immutable, non_constant_identifier_names, prefer_const_constructors, unnecessary_this, avoid_print
-
-import 'dart:async';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
-import 'package:gimme/screens/workout/controller/workout_controller.dart';
-import 'package:gimme/screens/workout/detail_workout.dart';
 
 class Detail_Exercise extends StatefulWidget {
   final String image, exercise_name, kalori, duration;
@@ -42,7 +39,9 @@ class _Detail_ExerciseState extends State<Detail_Exercise> {
               height: MediaQuery.of(context).size.width * 0.23,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: NetworkImage(widget.image), fit: BoxFit.cover),
+                    image: ExtendedImage.network(widget.image).image,
+                    fit: BoxFit.cover
+                )
               ),
             ),
             Column(
@@ -70,13 +69,27 @@ class _Detail_ExerciseState extends State<Detail_Exercise> {
                                 "exercise_name": widget.exercise_name,
                                 "kalori": widget.kalori,
                                 "duration": widget.duration,
-                                "status": "pause"
+                                "status": "start"
                               };
                               Navigator.pushNamed(context, '/dashboard', arguments: 1);
+                            } else if(tempDataPlan['exercise_name'] != widget.exercise_name){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("You have an exercise plan"),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }else{
+                              setState(() {
+                                tempDataPlan = {};
+                              });
                             }
                           },
                           child: Text(
-                            tempDataPlan.isEmpty ? "Start" : tempDataPlan['exercise_name'] == widget.exercise_name ? "On Going" : "Start",
+                            tempDataPlan.isEmpty ? 
+                            "Start" : 
+                            tempDataPlan['exercise_name'] == widget.exercise_name ? 
+                            "On Going" : "Start",
                             style: TextStyle(
                                 fontFamily: "Montserrat",
                                 fontSize: 13,
@@ -91,7 +104,6 @@ class _Detail_ExerciseState extends State<Detail_Exercise> {
               ],
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.width * 0.23,
               child: Align(
                 alignment: Alignment.center,
@@ -100,7 +112,7 @@ class _Detail_ExerciseState extends State<Detail_Exercise> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.3),
                       child: Text(
                         widget.exercise_name,
                         style: TextStyle(
@@ -110,7 +122,7 @@ class _Detail_ExerciseState extends State<Detail_Exercise> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.3),
                       child: Text(
                         "${widget.time_exercise} Minutes",
                         style: TextStyle(

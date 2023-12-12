@@ -209,9 +209,8 @@ class _DetailTransactionScreenState extends State<DetailTransactionScreen> {
                               Share.share(
                                 'Check out my transaction on Gimme!\n\n'
                                 'Recipient: ${widget.dataTransaction.gym!['name']}\n'
-                                'Payment Date: ${formatStringDate(widget.dataTransaction.updated_at.toString())}\n'
+                                'Payment Date: ${formatStringDate(widget.dataTransaction.created_at.toString())}\n'
                                 'Amount: Rp. ${moneyFormat(widget.dataTransaction.payment_amount)},00\n'
-                                'Payment ID: ${widget.dataTransaction.id_transaction.toString()}\n\n'
                                 'Download Gimme now on Play Store!',
                                 subject: 'Check out my transaction on Gimme!',
                               );

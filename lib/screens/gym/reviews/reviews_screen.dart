@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/controller/gymController.dart';
 import 'package:gimme/controller/reviewsController.dart';
 import 'package:gimme/data/review.dart';
-import 'package:gimme/screens/gym/detail_screen.dart';
 import 'package:gimme/screens/gym/reviews/slicing/widget.dart';
 import 'package:http/http.dart';
+import 'package:extended_image/extended_image.dart';
 
 
 class ReviewsScreen extends StatefulWidget {
@@ -69,10 +68,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
             backgroundColor: Colors.white,
             leading: IconButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, widget.data['route'], arguments: {
-                  'id': widget.data['id_gym'],
-                  'route': savedRoute
-                });
+                Navigator.pushReplacementNamed(context, widget.data['route'], arguments: {'id': widget.data['id_gym']});
               },
               icon: const Icon(Icons.arrow_back_rounded, color: Colors.black),
             ),
@@ -443,25 +439,43 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(5),
-                                  child: CachedNetworkImage(
-                                    imageUrl: reviews[index].images![index2],
+                                  child: ExtendedImage.network(
+                                    reviews[index].images![index2],
                                     fit: BoxFit.cover,
-                                    errorWidget: (context, error, stackTrace) {
-                                      return const SizedBox(
-                                        width: 100,
-                                        height: 100,
-                                        child: Center(
-                                          child: Icon(Icons.error),
-                                        ),
-                                      );
+                                    cache: true,
+                                    enableMemoryCache: true,
+                                    handleLoadingProgress: true,
+                                    retries: 10,
+                                    timeLimit: const Duration(seconds: 10),
+                                    timeRetry: const Duration(seconds: 10),
+                                    headers: const {
+                                      'Keep-Alive': 'true'
                                     },
-                                    progressIndicatorBuilder: (context, url, downloadProgress) => 
-                                      Center(
-                                        child: CircularProgressIndicator(
-                                          value: downloadProgress.progress,
-                                        ),
-                                      ),
-                                  ),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(5),
+                                    loadStateChanged: (ExtendedImageState state) {
+                                      switch (state.extendedImageLoadState) {
+                                        case LoadState.loading:
+                                          return const Center(
+                                            child: CircularProgressIndicator(color: primaryColor),
+                                          );
+                                        case LoadState.completed:
+                                          return ExtendedRawImage(
+                                            image: state.extendedImageInfo?.image,
+                                            fit: BoxFit.cover,
+                                          );
+                                        case LoadState.failed:
+                                          return GestureDetector(
+                                            onTap: () {
+                                              state.reLoadImage();
+                                            },
+                                            child: const Center(
+                                              child: Icon(Icons.refresh_rounded, color: primaryColor),
+                                            ),
+                                          );
+                                      }
+                                    },
+                                  )
                                 ),
                               ),
                             );

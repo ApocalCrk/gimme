@@ -13,10 +13,10 @@ void main() async {
     null,
     [
       NotificationChannel(
-          channelKey: 'instant_notification',
-          channelName: 'Basic Instant Notification',
+          channelKey: 'gimme-channel',
+          channelName: 'Gimme',
           channelDescription:
-              'Notification channel that can trigger notification instantly',
+              'Notification channel for gimme app',
           defaultColor: const Color(0xFF9D50DD),
           ledColor: Colors.white),
     ],
@@ -51,7 +51,7 @@ class _AppScreen extends State<App> {
         "uid": await SharedPref.readPrefStr("uid"),
         "photoURL": await SharedPref.readPrefStr("photoURL"),
         "dateofbirth": await SharedPref.readPrefStr("dateofbirth"),
-        "phone_number": await SharedPref.readPrefStr("phone_number"),
+        "phoneNumber": await SharedPref.readPrefStr("phoneNumber"),
         "address": await SharedPref.readPrefStr("address"),
         "height": await SharedPref.readPrefStr("height"),
         "weight": await SharedPref.readPrefStr("weight"),
@@ -71,6 +71,10 @@ class _AppScreen extends State<App> {
       scrollBehavior: ScrollB(),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRoute.generateRoute,
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: "Montserrat"
+      ),
       home: checkToken == "" ? const Auth() : const Dashboard()
     );
   }

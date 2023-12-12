@@ -349,7 +349,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
               var dataTemp = widget.dataTransaction;
               Transaction transaction = Transaction(
                 id_transaction: generateIDTransaction(),
-                uid: int.parse(dataUser['uid']),
+                uid: int.parse(dataUser['uid'].toString()),
                 id_gym: dataTemp['id_gym'],
                 payment_method: dataTemp['payment_method'],
                 payment_status: "Paid",

@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors_in_immutables
-
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutItem extends StatelessWidget {
@@ -24,34 +23,14 @@ class WorkoutItem extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
-                CachedNetworkImage(
-                  imageUrl: image,
-                  imageBuilder: (context, imageProvider) => Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  placeholder: (context, url) => Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[300],
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[300],
-                    ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                        image: ExtendedImage.network(image).image,
+                        fit: BoxFit.cover),
                   ),
                 ),
                 SizedBox(

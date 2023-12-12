@@ -1,10 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, prefer_final_fields
-
-import 'dart:async';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/screens/workout/workout_components/detail_exercise.dart';
 import 'package:gimme/screens/workout/workout_components/slide_up_exercise.dart';
@@ -30,19 +26,6 @@ class WorkoutDetail extends StatefulWidget {
   State<WorkoutDetail> createState() => _WorkoutDetailState();
 }
 
-class Notify {
-  static Future<bool> instantNotify() async {
-    final AwesomeNotifications awesomeNotifications = AwesomeNotifications();
-    return awesomeNotifications.createNotification(
-      content: NotificationContent(
-          id: Random().nextInt(100),
-          channelKey: 'instant_notification',
-          title: "Gimme Notification",
-          body: "Thanks for using gimme, keep ur spirit to go FIT !!!"),
-    );
-  }
-}
-
 class _WorkoutDetailState extends State<WorkoutDetail> {
   double defaultContextSizeCut = 3;
   ScrollController _scrollController = ScrollController();
@@ -52,7 +35,7 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
       if (_scrollController.offset <= 0) {
         defaultContextSizeCut = 3;
       } else if (_scrollController.offset > 0 && _scrollController.offset < 100) {
-        defaultContextSizeCut = 3 + (_scrollController.offset / 80);
+        defaultContextSizeCut = 3 + (_scrollController.offset / 20);
       } 
     });
   }
@@ -76,27 +59,44 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
                 ),
-                child: CachedNetworkImage(
-                  imageUrl: widget.image,
-                  color: Colors.black.withOpacity(0.8),
-                  colorBlendMode: BlendMode.darken,
-                  fit: BoxFit.cover,
-                  height: MediaQuery.of(context).size.height / defaultContextSizeCut,
+                child: ExtendedImage.network(
+                  widget.image,
                   width: MediaQuery.of(context).size.width,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      height: MediaQuery.of(context).size.height / defaultContextSizeCut,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                    ),
+                  height: MediaQuery.of(context).size.height / defaultContextSizeCut,
+                  fit: BoxFit.cover,
+                  cache: true,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
                   ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                  loadStateChanged: (ExtendedImageState state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height / defaultContextSizeCut,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      case LoadState.completed:
+                        return ExtendedRawImage(
+                          image: state.extendedImageInfo?.image,
+                          color: Colors.black.withOpacity(0.8),
+                          colorBlendMode: BlendMode.darken,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / defaultContextSizeCut,
+                          fit: BoxFit.cover,
+                        );
+                      case LoadState.failed:
+                        return const Icon(Icons.error);
+                    }
+                  },
                 ),
               ),
               Padding(
@@ -129,32 +129,34 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(width: 50),
-                  ],
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / defaultContextSizeCut -
-                          100, right: 20),
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: secondaryColor.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: secondaryColor.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            widget.total_time.toString(),
-                            style: const TextStyle(
-                              fontSize: 15,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                widget.total_time.toString(),
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Montserrat",
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            'minutes',
+                            style: TextStyle(
+                              fontSize: 10,
                               fontWeight: FontWeight.bold,
                               fontFamily: "Montserrat",
                               color: Colors.white,
@@ -162,17 +164,8 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
                           ),
                         ],
                       ),
-                      const Text(
-                        'minutes',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Montserrat",
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -204,9 +197,10 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
                       child: Text(
                         widget.description,
                         style: const TextStyle(
+                          color: secondaryColor,
                           fontFamily: "Montserrat",
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                         ),
                         textAlign: TextAlign.justify,
                       ),
@@ -230,9 +224,16 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
                           height: 10,
                         ),
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: widget.data.length,
                         itemBuilder: (context, index) {
+                          var sendDataExercise = {};
+                          sendDataExercise['id_workout'] = widget.id_workout;
+                          sendDataExercise['exercise_name'] = widget.data[index]['name'];
+                          sendDataExercise['description_excercise'] = widget.data[index]['description_excercise'];
+                          sendDataExercise['kalori'] = widget.data[index]['kalori'];
+                          sendDataExercise['set'] = widget.data[index]['set'];
+                          sendDataExercise['duration'] = widget.data[index]['duration'];
                           var exerciseData = widget.data[index];
                           return InkWell(
                             onTap: () {
@@ -240,7 +241,7 @@ class _WorkoutDetailState extends State<WorkoutDetail> {
                                 isScrollControlled: true,
                                 context: context,
                                 builder: (_) {
-                                  return modalSlideUp(data: exerciseData);
+                                  return modalSlideUp(data: sendDataExercise);
                                 },
                               );
                             },

@@ -16,6 +16,7 @@ class TransactionController {
       var response = await post(
         Uri.http(url, '$endpoint/transaction/sendTransaction'),
         body: {
+          'id_transaction': tr.id_transaction.toString(),
           'uid': tr.uid.toString(),
           'id_gym': tr.id_gym.toString(),
           'payment_method': tr.payment_method,

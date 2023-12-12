@@ -58,7 +58,7 @@ class _AddReviewScreenState extends State<ReviewScreen> {
     }else{
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Maksimal 3 gambar'),
+          content: Text('Max 3 files'),
           backgroundColor: Colors.red,
         )
       );
@@ -292,6 +292,7 @@ class _AddReviewScreenState extends State<ReviewScreen> {
                               "Send",
                               style: TextStyle(
                                 fontSize: 20,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: "Montserrat"
                               ),

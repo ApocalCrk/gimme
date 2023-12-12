@@ -28,4 +28,13 @@ class GeneratorController {
     );
     return response.then((value) => jsonDecode(value.body)['status']);
   }
+
+  cancelMembership(int id_membership){
+    var response = delete(Uri.http(url, "$endpoint/transaction/cancelMembership"),
+      body: {
+        'id_membership': id_membership.toString()
+      }
+    );
+    return response.then((value) => jsonDecode(value.body)['status']);
+  }
 }

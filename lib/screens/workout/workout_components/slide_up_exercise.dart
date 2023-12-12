@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 
-class modalSlideUp extends StatelessWidget {
+class modalSlideUp extends StatefulWidget {
   const modalSlideUp({
     super.key,
     required this.data,
   });
   final data;
 
+  @override
+  _modalSlideUpState createState() => _modalSlideUpState();
+}
+
+class _modalSlideUpState extends State<modalSlideUp> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -56,7 +61,7 @@ class modalSlideUp extends StatelessWidget {
                   child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Text(
-                  data['description_excercise'],
+                  widget.data['description_excercise'],
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontFamily: "Montserrat",
@@ -138,7 +143,7 @@ class modalSlideUp extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0),
-                    child: Text('${data['duration']} minutes',
+                    child: Text('${widget.data['duration']} minutes',
                         style: TextStyle(
                           fontFamily: "Montserrat",
                           fontSize: 14,
@@ -152,7 +157,7 @@ class modalSlideUp extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 20.0),
-                    child: Text('${data['kalori']} cals',
+                    child: Text('${widget.data['kalori']} cals',
                         style: TextStyle(
                           fontFamily: "Montserrat",
                           fontSize: 14,
@@ -166,7 +171,7 @@ class modalSlideUp extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 40.0),
-                    child: Text('${data['set']}',
+                    child: Text('${widget.data['set']}',
                         style: TextStyle(
                           fontFamily: "Montserrat",
                           fontSize: 14,
@@ -215,11 +220,11 @@ class modalSlideUp extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    for (int i = 0; i < int.parse(data['set']); i++)
+                    for (int i = 0; i < int.parse(widget.data['set']); i++)
                       Column(
                         children: [
                           Text(
-                            data['set'],
+                            widget.data['set'],
                             style: TextStyle(
                                 fontFamily: "Montserrat",
                                 fontSize: 16.0,
@@ -246,7 +251,7 @@ class modalSlideUp extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    for (int i = 0; i < int.parse(data['set']); i++)
+                    for (int i = 0; i < int.parse(widget.data['set']); i++)
                       Column(
                         children: [
                           Container(
@@ -276,13 +281,36 @@ class modalSlideUp extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.width * 0.13,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if(tempDataPlan.isEmpty){
+                              tempDataPlan = {
+                                "id_workout": widget.data['id_workout'],
+                                "exercise_name": widget.data['exercise_name'],
+                                "kalori": widget.data['kalori'],
+                                "duration": widget.data['duration'],
+                                "status": "start"
+                              };
+                              Navigator.pushNamed(context, '/dashboard', arguments: 1);
+                            } else if(tempDataPlan['exercise_name'] != widget.data['exercise_name']){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("You have an exercise plan"),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }else{
+                              setState(() {
+                                tempDataPlan = {};
+                              });
+                            }
+                          },
                           style: const ButtonStyle(
                               backgroundColor:
                                   MaterialStatePropertyAll(primaryColor)),
-                          child: const Text(
-                            "Start",
-                            style: TextStyle(
+                          child: Text(
+                            tempDataPlan.isEmpty ? 
+                              "Start Exercise" : tempDataPlan['exercise_name'] == widget.data['exercise_name'] ? "Stop Exercise" : "Start Exercise",
+                            style: const TextStyle(
                                 fontFamily: "Montserrat",
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
