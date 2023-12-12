@@ -31,4 +31,25 @@ class TransactionController {
       return null;
     }
   }
+
+  Future<String?> updateTransaction(Transaction tr) async {
+    try {
+      var response = await put(
+        Uri.http(url, '$endpoint/transaction/updateTransaction'),
+        body: {
+          'id_transaction': tr.id_transaction.toString(),
+          'uid': tr.uid.toString(),
+          'id_gym': tr.id_gym.toString(),
+          'payment_method': tr.payment_method,
+          'payment_status': tr.payment_status,
+          'payment_amount': tr.payment_amount.toString(),
+          'bundle': tr.bundle,
+          'type_membership': tr.type_membership
+        }
+      );
+      return response.body;
+    } catch (e) {
+      return null;
+    }
+  }
 }

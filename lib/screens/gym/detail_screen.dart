@@ -675,7 +675,8 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 'place': gym!.place,
                                                 'price': gym!.packages['Silver']['price']['monthly'],
                                                 'type': 'Membership',
-                                                'duration': '1 Month Membership'
+                                                'duration': '1 Month Membership',
+                                                'status': 'create'
                                               });
                                             },
                                             child: const Text(
@@ -725,7 +726,8 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 'place': gym!.place,
                                                 'price': gym!.packages['Silver']['price']['yearly'],
                                                 'type': 'Membership',
-                                                'duration': '1 Year Membership'
+                                                'duration': '1 Year Membership',
+                                                'status': 'create'
                                               });
                                             },
                                             child: const Text(
@@ -847,7 +849,8 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 'place': gym!.place,
                                                 'price': gym!.packages['Gold']['price']['monthly'],
                                                 'type': 'Membership',
-                                                'duration': '1 Month Membership'
+                                                'duration': '1 Month Membership',
+                                                'status': 'create'
                                               });
                                             },
                                             child: const Text(
@@ -897,7 +900,8 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 'place': gym!.place,
                                                 'price': gym!.packages['Gold']['price']['yearly'],
                                                 'type': 'Membership',
-                                                'duration': '1 Year Membership'
+                                                'duration': '1 Year Membership',
+                                                'status': 'create'
                                               });
                                             },
                                             child: const Text(
@@ -1021,7 +1025,8 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 'place': gym!.place,
                                                 'price': gym!.packages['Bronze']['price']['yearly'],
                                                 'type': 'Membership',
-                                                'duration': '1 Month Membership'
+                                                'duration': '1 Month Membership',
+                                                'status': 'create'
                                               });
                                             },
                                             child: const Text(
@@ -1071,7 +1076,8 @@ class _GymDetailScreenState extends State<GymDetailScreen> {
                                                 'place': gym!.place,
                                                 'price': gym!.packages['Bronze']['price']['yearly'],
                                                 'type': 'Membership',
-                                                'duration': '1 Year Membership'
+                                                'duration': '1 Year Membership',
+                                                'status': 'create'
                                               });
                                             },
                                             child: const Text(

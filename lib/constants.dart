@@ -184,25 +184,37 @@ const Map<int, Map<dynamic, String>> defaultShortcut = {
     "icon": "assets/images/icon/gym.png",
     "title": "Gym",
     "Color": "0xFFAED6F3",
-    "route": "/gym"
+    "id_workout": "1",
+    "exercise_name": "Barbell Press",
+    "kalori": "355",
+    "duration": "1"
   },
   2: {
     "icon": "assets/images/icon/diet.png",
     "title": "Diet",
     "Color": "0xFFAFB2EC",
-    "route": "/diet"
+    "id_workout": "2",
+    "exercise_name": "Mountain Climber",
+    "kalori": "355",
+    "duration": "1"
   },
   3: {
     "icon": "assets/images/icon/yoga.png",
     "title": "Yoga",
     "Color": "0xFFCCF3AE",
-    "route": "/yoga"
+    "id_workout": "1",
+    "exercise_name": "Plate Pressout",
+    "kalori": "355",
+    "duration": "1"
   },
   4: {
     "icon": "assets/images/icon/cardio.png",
     "title": "Cardio",
     "Color": "0xFFF3AEBA",
-    "route": "/cardio"
+    "id_workout": "1",
+    "exercise_name": "Hanging Leg Raise",
+    "kalori": "355",
+    "duration": "1"
   },
 };
 

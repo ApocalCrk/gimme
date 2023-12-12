@@ -65,7 +65,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           );
           getExerciseData();
           getAverageWorkout();
-          tempDataPlan = {};
           Notify(
             title: '${tempDataPlan['exercise_name']} Finished',
             body: 'You have finished your workout',
@@ -85,6 +84,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               backgroundColor: successColor,
             ),
           );
+          tempDataPlan = {};
         });
         _timer!.cancel();
       } else if (tempDataPlan['status'] == 'start') {
@@ -406,9 +406,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                   },
                                   child: Text(
                                     tempDataPlan['status'] == 'pause' ?
-                                    'Start'
+                                    'Resume'
                                     :
-                                    'On Going',
+                                    'Pause',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 18,

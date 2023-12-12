@@ -8,7 +8,15 @@ import 'package:http/http.dart';
 class GeneratorController {
   showAllMembership(uid) {
     var response = get(Uri.http(url, "$endpoint/transaction/getAllMembership/$uid"));
-    return response.then((value) => jsonDecode(value.body)['data']);
+    return response.then((value) {
+      if(value.statusCode != 200) return throw Exception('Failed to load detail gym');
+      var data = jsonDecode(value.body)['data'];
+      for (var i = 0; i < data.length; i++) {
+        data[i]['gym']['facilities'] = jsonDecode(data[i]['gym']['facilities'])['facilities'];
+        data[i]['gym']['packages'] = jsonDecode(data[i]['gym']['packages'])['package'];
+      }
+      return data;
+    });
   }
 
   generateQrCode(int id_membership) {

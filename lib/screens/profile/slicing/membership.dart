@@ -141,165 +141,222 @@ class _MembershipScreenState extends State<MembershipScreen> {
                         ),
                       ]
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  dataMembership[index]['gym']['name'],
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontFamily: "Montserrat",
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      dataMembership[index]['gym']['name'],
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontFamily: "Montserrat",
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      dataMembership[index]['gym']['place'],
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontFamily: "Montserrat",
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  dataMembership[index]['gym']['place'],
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontFamily: "Montserrat",
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          formatStringDate(dataMembership[index]['start_date']),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontFamily: "Montserrat",
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          formatStringDate(dataMembership[index]['end_date']),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontFamily: "Montserrat",
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
-                            Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      formatStringDate(dataMembership[index]['start_date']),
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontFamily: "Montserrat",
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(width: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      formatStringDate(dataMembership[index]['end_date']),
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontFamily: "Montserrat",
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
                           ],
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context, 
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text("Cancel Membership",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontFamily: "Montserrat",
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                dataMembership[index]['transaction']['type_membership'] == '1 Month Membership' ? 
+                                Navigator.pushNamed(context, '/gym/checkout', arguments: {
+                                  'id_transaction': dataMembership[index]['transaction']['id_transaction'],
+                                  'id_gym': dataMembership[index]['gym']['id_gym'],
+                                  'bundle': dataMembership[index]['transaction']['bundle'],
+                                  'name': dataMembership[index]['gym']['name'],
+                                  'place': dataMembership[index]['gym']['place'],
+                                  'price': dataMembership[index]['gym']['packages'][
+                                    dataMembership[index]['transaction']['bundle'] == 'Gold Membership' ? 
+                                    'Gold' : dataMembership[index]['transaction']['bundle'] == 'Silver Membership' ?
+                                    'Silver' : 'Bronze'
+                                  ]['price']['yearly'],
+                                  'type': 'Membership',
+                                  'duration_update': '1 Year Membership',
+                                  "status": "update"
+                                })
+                                :
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('You can\'t update this membership'),
+                                    backgroundColor: errorColor,
                                   ),
-                                  content: const Text("Are you sure want to cancel this membership?",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
-                                      fontFamily: "Montserrat",
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text(
-                                        "No",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontFamily: "Montserrat",
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        await GeneratorController().cancelMembership(dataMembership[index]['id']).then((value) {
-                                          if (value == 'success') {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text('Membership canceled'),
-                                                backgroundColor: successColor,
-                                              ),
-                                            );
-                                            setState(() {
-                                              showMembership(dataUser['uid']);
-                                            });
-                                          }else{
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text('Failed to cancel membership'),
-                                                backgroundColor: errorColor,
-                                              ),
-                                            );
-                                          }
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("Yes",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                          fontFamily: "Montserrat",
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
                                 );
-                              }
-                            );
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 4,
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            decoration: BoxDecoration(
-                              color: errorColor,
-                              borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: const Center(
-                              child: Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.bold,
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: warningColor,
+                                  borderRadius: BorderRadius.circular(10)
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    'Update Plan',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontFamily: "Montserrat",
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context, 
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("Cancel Membership",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontFamily: "Montserrat",
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      content: const Text("Are you sure want to cancel this membership?",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontFamily: "Montserrat",
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: const Text(
+                                            "No",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontFamily: "Montserrat",
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            await GeneratorController().cancelMembership(dataMembership[index]['id']).then((value) {
+                                              if (value == 'success') {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text('Membership canceled'),
+                                                    backgroundColor: successColor,
+                                                  ),
+                                                );
+                                                setState(() {
+                                                  showMembership(dataUser['uid']);
+                                                });
+                                              }else{
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text('Failed to cancel membership'),
+                                                    backgroundColor: errorColor,
+                                                  ),
+                                                );
+                                              }
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Yes",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                              fontFamily: "Montserrat",
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                );
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: errorColor,
+                                  borderRadius: BorderRadius.circular(10)
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    'Cancel Plan',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontFamily: "Montserrat",
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         )
                       ],
                     )

@@ -233,6 +233,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   fontWeight: FontWeight.w500
                                 ),
                               ),
+                              widget.dataTransaction['status'] == 'update' ?
+                              Text(
+                                "${widget.dataTransaction['duration_update']}",
+                                textAlign: TextAlign.right,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Montserrat",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500
+                                ),
+                              ) :
                               Text(
                                 "${widget.dataTransaction['duration']}",
                                 textAlign: TextAlign.right,
@@ -348,15 +359,38 @@ class _TransactionScreenState extends State<TransactionScreen> {
               });
               var dataTemp = widget.dataTransaction;
               Transaction transaction = Transaction(
-                id_transaction: generateIDTransaction(),
+                id_transaction: widget.dataTransaction['status'] == 'update' ? widget.dataTransaction['id_transaction'] : generateIDTransaction(),
                 uid: int.parse(dataUser['uid'].toString()),
                 id_gym: dataTemp['id_gym'],
                 payment_method: dataTemp['payment_method'],
                 payment_status: "Paid",
                 payment_amount: int.parse(dataTemp['price']),
                 bundle: dataTemp['bundle'],
-                type_membership: dataTemp['duration'],
+                type_membership: widget.dataTransaction['status'] == 'update' ? dataTemp['duration_update'] : dataTemp['duration'],
               );
+              widget.dataTransaction['status'] == 'update' ?
+              TransactionController().updateTransaction(transaction).then((value) {
+                var val = jsonDecode(value!);
+                if(val['status'] == 'success'){
+                  onProgress = true;
+                  transaction.gym = val['data']['gym'];
+                  transaction.membership = val['data']['membership'];
+                  transaction.created_at = DateTime.parse(val['data']['created_at']);
+                  transaction.updated_at = DateTime.parse(val['data']['updated_at']);
+                  Future.delayed(const Duration(seconds: 2)).then((_) {
+                    Navigator.pushReplacementNamed(context, '/gym/checkout/success', arguments: transaction);
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Payment Failed"),
+                      backgroundColor: Colors.red,
+                    )
+                  );
+                  Navigator.pop(context);
+                }
+              })
+              :
               TransactionController().sendTransaction(transaction).then((value) {
                 var val = jsonDecode(value!);
                 if(val['status'] == 'success'){

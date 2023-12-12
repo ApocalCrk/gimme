@@ -53,33 +53,45 @@ class Shortcut extends StatelessWidget {
             ),
           )
           :
-          Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(left: 20, right: 15),
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Color(int.parse(dataUser['shortcuts'][index+1]!["Color"]!)),
-                  borderRadius: BorderRadius.circular(50)
-                ),
-                child: Center(
-                  child: Image.asset(dataUser['shortcuts'][index+1]!["icon"]!, width: 30, height: 30)
-                ),
-              ),
-              const SizedBox(height: 5),
-              Container(
-                margin: const EdgeInsets.only(left: 20, right: 15),
-                child: Text(
-                  dataUser['shortcuts'][index + 1]!["title"]!,
-                  style: const TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 0.7),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Montserrat",
+          GestureDetector(
+            onTap: () {
+              tempDataPlan = {
+                "id_workout": int.parse(dataUser['shortcuts'][index+1]!["id_workout"]!),
+                "exercise_name": dataUser['shortcuts'][index+1]!["exercise_name"]!,
+                "kalori": dataUser['shortcuts'][index+1]!["kalori"]!,
+                "duration": dataUser['shortcuts'][index+1]!["duration"]!,
+                "status": "start"
+              };
+              Navigator.pushNamed(context, '/dashboard', arguments: 1);
+            },
+            child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 20, right: 15),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Color(int.parse(dataUser['shortcuts'][index+1]!["Color"]!)),
+                    borderRadius: BorderRadius.circular(50)
+                  ),
+                  child: Center(
+                    child: Image.asset(dataUser['shortcuts'][index+1]!["icon"]!, width: 30, height: 30)
                   ),
                 ),
-              )
-            ],
+                const SizedBox(height: 5),
+                Container(
+                  margin: const EdgeInsets.only(left: 20, right: 15),
+                  child: Text(
+                    dataUser['shortcuts'][index + 1]!["title"]!,
+                    style: const TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 0.7),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "Montserrat",
+                    ),
+                  ),
+                )
+              ],
+            ),
           );
         },
       ),
@@ -224,13 +236,16 @@ class AllShortcut extends StatelessWidget {
                   "icon": "assets/images/icon/cycling.png",
                   "title": "Cycling",
                   "Color": "0xFFAED6F3",
-                  "route": "/cycling"
+                  "id_workout": "1",
+                  "exercise_name": "Cycling",
+                  "kalori": "355",
+                  "duration": "1"
                 };
                 shortcut = dataUser['shortcuts'];
                 panelController.close();
                 SharedPref.saveStr("shortcuts", gson.encode(dataUser['shortcuts']));
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  Navigator.popAndPushNamed(context, '/dashboard');
+                  Navigator.popAndPushNamed(context, '/dashboard', arguments: 0);
                 });
               },
               child: Column(
@@ -269,13 +284,16 @@ class AllShortcut extends StatelessWidget {
                   "icon": "assets/images/icon/lifting.png",
                   "title": "Lifting",
                   "Color": "0xFFAFB2EC",
-                  "route": "/lifting"
+                  "id_workout": "1",
+                  "exercise_name": "Lifting",
+                  "kalori": "355",
+                  "duration": "1"
                 };
                 shortcut = dataUser['shortcuts'];
                 panelController.close();
                 SharedPref.saveStr("shortcuts", gson.encode(dataUser['shortcuts']));
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  Navigator.popAndPushNamed(context, '/dashboard');
+                  Navigator.popAndPushNamed(context, '/dashboard', arguments: 0);
                 });
               },
               child: Column(
@@ -314,13 +332,16 @@ class AllShortcut extends StatelessWidget {
                   "icon": "assets/images/icon/pilates.png",
                   "title": "Pilates",
                   "Color": "0xFFCCF3AE",
-                  "route": "/pilates"
+                  "id_workout": "1",
+                  "exercise_name": "Pilates",
+                  "kalori": "355",
+                  "duration": "1"
                 };
                 shortcut = dataUser['shortcuts'];
                 panelController.close();
                 SharedPref.saveStr("shortcuts", gson.encode(dataUser['shortcuts']));
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  Navigator.popAndPushNamed(context, '/dashboard');
+                  Navigator.popAndPushNamed(context, '/dashboard', arguments: 0);
                 });
               },
               child: Column(
@@ -359,13 +380,16 @@ class AllShortcut extends StatelessWidget {
                   "icon": "assets/images/icon/zumba.png",
                   "title": "Zumba",
                   "Color": "0xFFF3AEBA",
-                  "route": "/zumba"
+                  "id_workout": "1",
+                  "exercise_name": "Zumba",
+                  "kalori": "355",
+                  "duration": "1"
                 };
                 shortcut = dataUser['shortcuts'];
                 panelController.close();
                 SharedPref.saveStr("shortcuts", gson.encode(dataUser['shortcuts']));
                 Future.delayed(const Duration(milliseconds: 500), () {
-                  Navigator.popAndPushNamed(context, '/dashboard');
+                  Navigator.popAndPushNamed(context, '/dashboard', arguments: 0);
                 });
               },
               child: Column(

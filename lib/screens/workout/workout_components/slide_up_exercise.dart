@@ -225,7 +225,7 @@ class _modalSlideUpState extends State<modalSlideUp> {
                         children: [
                           Text(
                             widget.data['set'],
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontFamily: "Montserrat",
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
