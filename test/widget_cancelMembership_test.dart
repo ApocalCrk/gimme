@@ -1,5 +1,6 @@
-import 'dart:io';
+// ignore_for_file: file_names
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gimme/routes/AppRoute.dart';
@@ -24,6 +25,15 @@ void main() {
     await tester.tap(find.text("Sign In"));
     await tester.pumpAndSettle(const Duration(seconds: 5));
     
-    expect(find.text("Hello, Ferdy Firmansyah!"), findsOneWidget);
+    await tester.tap(find.text("My Membership"));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    await tester.tap(find.text("Cancel Plan"));
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    await tester.tap(find.text("Yes"));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Your membership has been cancelled"), findsAny);
   });
 }

@@ -323,7 +323,7 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                                     ),
                                   ),
                                   Text(
-                                    ReviewsController().checkUser(reviews[index].created_at.toString()),
+                                    checkUser(reviews[index].created_at.toString()),
                                     style: TextStyle(
                                       color: secondaryColor.withAlpha(150),
                                       fontFamily: "Montserrat",

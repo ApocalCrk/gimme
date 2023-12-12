@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/screens/auth/model/User.dart';
@@ -19,7 +21,7 @@ class RegisterCredential {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(value.body),
+            content: Text(jsonDecode(value.body)['message']),
             backgroundColor: Colors.red,
           )
         );

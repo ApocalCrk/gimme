@@ -304,7 +304,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                                               if (value == 'success') {
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   const SnackBar(
-                                                    content: Text('Membership canceled'),
+                                                    content: Text('Your membership has been cancelled'),
                                                     backgroundColor: successColor,
                                                   ),
                                                 );

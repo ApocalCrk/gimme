@@ -25,6 +25,7 @@ class CredentialLogin {
         SharedPref.saveStr('address', user['address']);
         SharedPref.saveStr('height', user['height']);
         SharedPref.saveStr('weight', user['weight']);
+        SharedPref.saveStr('created_at', user['created_at']);
         SharedPref.saveStr("shortcuts", gson.encode(defaultShortcut));
         dataUser = {
           'name': user['name'],
@@ -37,6 +38,7 @@ class CredentialLogin {
           'address': user['address'],
           'height': user['height'],
           'weight': user['weight'],
+          'created_at': user['created_at'],
           'shortcuts': defaultShortcut
         };
         ScaffoldMessenger.of(context).showSnackBar(

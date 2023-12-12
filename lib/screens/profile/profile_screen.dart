@@ -17,7 +17,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool isSwitched = false;
   final profileController = ProfileController();
   File? selectedimage;
   String? selectedImageBase64;
@@ -79,8 +78,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           const SizedBox(height: 5),
-                          const Text(
-                            "Free Member",
+                          Text(
+                            checkUser(dataUser['created_at']),
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 15,
@@ -716,6 +715,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   )

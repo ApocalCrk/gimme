@@ -13,7 +13,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   bool _isObscure = true;
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   _changeObsecure() {
@@ -83,7 +83,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         const SizedBox(height: 30),
                         TextFormField(
-                          controller: _emailController,
+                          key: const ValueKey("username"),
+                          controller: _usernameController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -111,6 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
+                          key: const ValueKey("password"),
                           controller: _passwordController,
                           obscureText: _isObscure,
                           decoration: InputDecoration(
@@ -156,9 +158,10 @@ class _SignInScreenState extends State<SignInScreen> {
                   Column(
                     children: [
                       ElevatedButton(
+                        key: const ValueKey("login"),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            CredentialLogin().verifiedCredential(_emailController.text, _passwordController.text, context);
+                            CredentialLogin().verifiedCredential(_usernameController.text, _passwordController.text, context);
                           }
                         },
                         style: ButtonStyle(

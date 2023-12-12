@@ -55,6 +55,7 @@ class _AppScreen extends State<App> {
         "address": await SharedPref.readPrefStr("address"),
         "height": await SharedPref.readPrefStr("height"),
         "weight": await SharedPref.readPrefStr("weight"),
+        "created_at": await SharedPref.readPrefStr("created_at"),
         "shortcuts": dataTemp
       };
       setState(() {

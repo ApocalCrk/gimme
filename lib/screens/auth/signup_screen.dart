@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/screens/auth/controller/register.dart';
@@ -115,6 +117,12 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 color: Colors.grey
                               ),
                             ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your name';
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
@@ -137,7 +145,13 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 fontWeight: FontWeight.w500,
                                 color: Colors.grey
                               ),
-                            )
+                            ),
+                            validator: (value) {
+                              if (!RegExp(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$").hasMatch(value!)) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
@@ -195,7 +209,13 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 highlightColor: Colors.transparent,
                                 splashColor: Colors.transparent
                               ),
-                            )
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              return null;
+                            },
                           ),
                           sizedBoxDefault,
                           TextFormField(
@@ -230,7 +250,13 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 highlightColor: Colors.transparent,
                                 splashColor: Colors.transparent
                               )
-                            )
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              return null;
+                            },
                           ),
                           sizedBoxDefault,
                           TextFormField(
@@ -275,6 +301,12 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 ),
                               ),
                             ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your date of birth';
+                              }
+                              return null;
+                            },
                           ),
                         ]
                       ),
@@ -301,22 +333,24 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 )
                               );
                             } else {
-                              User user = User(
-                                name: nameInput.text,
-                                email: emailinput.text,
-                                username: usernameInput.text,
-                                password: passwordinput.text,
-                                dateofbirth: dateinput.text,
-                                photoUrl: 'avatar/fathur.jpg',
-                                phoneNumber: '9371713',
-                                address: '313131',
-                                height: '180',
-                                weight: '80'
-                              );
-                              RegisterCredential().credentialRegister(
-                                user,
-                                context
-                              );
+                              if (_formKey.currentState!.validate()) {
+                                User user = User(
+                                  name: nameInput.text,
+                                  email: emailinput.text,
+                                  username: usernameInput.text,
+                                  password: passwordinput.text,
+                                  dateofbirth: dateinput.text,
+                                  photoUrl: 'avatar/fathur.jpg',
+                                  phoneNumber: '-',
+                                  address: '-',
+                                  height: '-',
+                                  weight: '-'
+                                );
+                                RegisterCredential().credentialRegister(
+                                  user,
+                                  context
+                                );
+                              }
                             }
                           },
                           style: ButtonStyle(

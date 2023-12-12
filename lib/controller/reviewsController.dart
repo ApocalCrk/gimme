@@ -64,18 +64,4 @@ class ReviewsController {
     }
     return stars;
   }
-
-  String checkUser(String date) {
-    var dateSplit = date.split("T");
-    var dateSplit2 = dateSplit[0].split("-");
-    DateTime now = DateTime.now();
-    DateTime newDate = DateTime(int.parse(dateSplit2[0]), int.parse(dateSplit2[1]), int.parse(dateSplit2[2].split(" ")[0]));
-    var difference = now.difference(newDate).inDays;
-    if (difference > 330) {
-      return "Professional User";
-    } else {
-      return "New User";
-    }
-  }
-
 }

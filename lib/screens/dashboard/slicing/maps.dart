@@ -136,7 +136,7 @@ class _MapsState extends State<Maps> {
                   height: 20.0,
                   point: LatLng(gym['latitude'], gym['longitude']),
                   builder: (ctx) => GestureDetector(
-                    onTap: () async {
+                    onTap: () {
                       Navigator.pushNamed(context, '/maps');
                     },
                     child: const Icon(

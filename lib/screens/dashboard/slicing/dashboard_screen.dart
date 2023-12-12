@@ -76,9 +76,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           fontWeight: FontWeight.w600
                         ),
                       ),
-                      const Text(
-                        "Good Morning, Let's Exercise!",
-                        style: TextStyle(
+                      Text(
+                        DateTime.now().hour < 12 ? "Good Morning, Let's Exercise!" : DateTime.now().hour < 18 ? "Good Afternoon, Let's Exercise!" : "Good Evening, Let's Exercise!",
+                        style: const TextStyle(
                           color: Color(0xff707070),
                           fontSize: 15,
                           fontFamily: "Montserrat"
