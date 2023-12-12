@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/screens/auth/model/User.dart';
+import 'package:gimme/screens/auth/signin_screen.dart';
 import 'package:http/http.dart';
 
 
@@ -15,7 +16,8 @@ class RegisterCredential {
             backgroundColor: successColor
           )
         );
-        Navigator.pushNamed(context, '/auth/signin');
+        // Navigator.pushNamed(context, '/auth/signin');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const SignInScreen()));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

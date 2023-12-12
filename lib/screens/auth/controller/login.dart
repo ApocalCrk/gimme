@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gimme/screens/dashboard/dashboard.dart';
 import 'package:http/http.dart';
 import 'package:gimme/constants.dart';
 import 'package:gson/gson.dart';
@@ -45,7 +46,8 @@ class CredentialLogin {
             backgroundColor: Colors.green,
           )
         );
-        Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
+        // Navigator.pushNamedAndRemoveUntil(context, '/dashboard', (route) => false);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Dashboard()));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
