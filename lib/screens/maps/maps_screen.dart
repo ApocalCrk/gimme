@@ -341,17 +341,8 @@ class _MapsScreenState extends State<MapsScreen> with TickerProviderStateMixin {
                             loadStateChanged: (ExtendedImageState state) {
                               switch (state.extendedImageLoadState) {
                                 case LoadState.loading:
-                                  return Shimmer.fromColors(
-                                    baseColor: Colors.grey[300]!,
-                                    highlightColor: Colors.grey[100]!,
-                                    child: Container(
-                                      width: 100,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(50)
-                                      ),
-                                    ),
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
                                   );
                                 case LoadState.completed:
                                   return ExtendedRawImage(
@@ -482,8 +473,17 @@ class _MapsScreenState extends State<MapsScreen> with TickerProviderStateMixin {
                                     loadStateChanged: (ExtendedImageState state) {
                                       switch (state.extendedImageLoadState) {
                                         case LoadState.loading:
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
+                                          return Shimmer.fromColors(
+                                            baseColor: Colors.grey[300]!,
+                                            highlightColor: Colors.grey[100]!,
+                                            child: Container(
+                                              width: MediaQuery.of(context).size.width * 0.3,
+                                              height: 100,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.circular(5)
+                                              ),
+                                            ),
                                           );
                                         case LoadState.completed:
                                           return Container(
