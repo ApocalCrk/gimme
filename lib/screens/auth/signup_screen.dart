@@ -58,9 +58,9 @@ class _SignUpScreennState extends State<SignUpScreen> {
                 begin: Alignment.bottomRight,
                 end: Alignment.topLeft,
                 colors: [
-                  primary2Color.withAlpha(100),
-                  lowPrimaryColor.withAlpha(80),
-                  primary2Color.withAlpha(100),
+                  primary2Color.withAlpha(50),
+                  lowPrimaryColor.withAlpha(70),
+                  primary2Color.withAlpha(50),
                 ]
               )
             ),
@@ -90,7 +90,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                               fontFamily: 'Montserrat',
                               fontSize: 24,
                               fontWeight: FontWeight.w500,
-                              color: Colors.grey
+                              color: secondaryColor
                             ),
                           ),
                           const SizedBox(height: 30),
@@ -104,7 +104,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                               focusedBorder: const OutlineInputBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                                 borderSide: BorderSide(
-                                  color: Colors.grey,
+                                  color: secondaryColor,
                                 ),
                               ),
                               labelText: "Name",
@@ -112,7 +112,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 fontFamily: 'Montserrat',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey
+                                color: secondaryColor
                               ),
                             ),
                             validator: (value) {
@@ -133,7 +133,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                               focusedBorder: const OutlineInputBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                                 borderSide: BorderSide(
-                                  color: Colors.grey,
+                                  color: secondaryColor,
                                 ),
                               ),
                               labelText: "Email",
@@ -141,7 +141,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 fontFamily: 'Montserrat',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey
+                                color: secondaryColor
                               ),
                             ),
                             validator: (value) {
@@ -162,7 +162,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                               focusedBorder: const OutlineInputBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                                 borderSide: BorderSide(
-                                  color: Colors.grey,
+                                  color: secondaryColor,
                                 ),
                               ),
                               labelText: "Username",
@@ -170,7 +170,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 fontFamily: 'Montserrat',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey
+                                color: secondaryColor
                               ),
                             )
                           ),
@@ -186,7 +186,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                               focusedBorder: const OutlineInputBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                                 borderSide: BorderSide(
-                                  color: Colors.grey,
+                                  color: secondaryColor,
                                 ),
                               ),
                               labelText: "Password",
@@ -194,7 +194,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 fontFamily: 'Montserrat',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey,
+                                color: secondaryColor,
                               ),
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -202,7 +202,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                     _changeObsecure();
                                   });
                                 },
-                                color: Colors.grey,
+                                color: secondaryColor,
                                 icon: _isObscure ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                                 highlightColor: Colors.transparent,
                                 splashColor: Colors.transparent
@@ -227,7 +227,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                               focusedBorder: const OutlineInputBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                                 borderSide: BorderSide(
-                                  color: Colors.grey,
+                                  color: secondaryColor,
                                 ),
                               ),
                               labelText: "Confirm Password",
@@ -235,7 +235,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 fontFamily: 'Montserrat',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey
+                                color: secondaryColor
                               ),
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -243,7 +243,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                     _changeObsecureConfirm();
                                   });
                                 },
-                                color: Colors.grey,
+                                color: secondaryColor,
                                 icon: _isObscureConfirm ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                                 highlightColor: Colors.transparent,
                                 splashColor: Colors.transparent
@@ -287,7 +287,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                                 fontFamily: 'Montserrat',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey,
+                                color: secondaryColor,
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -295,7 +295,7 @@ class _SignUpScreennState extends State<SignUpScreen> {
                               focusedBorder: const OutlineInputBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                                 borderSide: BorderSide(
-                                  color: Colors.grey,
+                                  color: secondaryColor,
                                 ),
                               ),
                             ),

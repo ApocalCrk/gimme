@@ -37,9 +37,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 begin: Alignment.bottomRight,
                 end: Alignment.topLeft,
                 colors: [
-                  primary2Color.withAlpha(100),
-                  lowPrimaryColor.withAlpha(80),
-                  primary2Color.withAlpha(100),
+                  primary2Color.withAlpha(50),
+                  lowPrimaryColor.withAlpha(70),
+                  primary2Color.withAlpha(50),
                 ]
               )
             ),
@@ -68,7 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             fontFamily: 'Montserrat',
                             fontSize: 24,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey
+                            color: secondaryColor
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -78,7 +78,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             fontFamily: 'Montserrat',
                             fontSize: 24,
                             fontWeight: FontWeight.w500,
-                            color: Colors.grey
+                            color: secondaryColor
                           ),
                         ),
                         const SizedBox(height: 30),
@@ -92,7 +92,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             focusedBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               borderSide: BorderSide(
-                                color: Colors.grey,
+                                color: secondaryColor,
                               ),
                             ),
                             labelText: "Username",
@@ -100,7 +100,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               fontFamily: 'Montserrat',
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
-                              color: Colors.grey
+                              color: secondaryColor
                             ),
                           ),
                           validator: (value) {
@@ -122,7 +122,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             focusedBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               borderSide: BorderSide(
-                                color: Colors.grey,
+                                color: secondaryColor,
                               ),
                             ),
                             labelText: "Password",
@@ -130,13 +130,13 @@ class _SignInScreenState extends State<SignInScreen> {
                               fontFamily: 'Montserrat',
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
-                              color: Colors.grey,
+                              color: secondaryColor,
                             ),
                             suffixIcon: IconButton(
                               onPressed: () {
                                 _changeObsecure();
                               },
-                              color: Colors.grey,
+                              color: secondaryColor,
                               icon: _isObscure ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
                               highlightColor: Colors.transparent,
                               splashColor: Colors.transparent
@@ -225,14 +225,20 @@ class _SignInScreenState extends State<SignInScreen> {
                         ],
                       ),
                       sizedBoxDefault,
-                      const Text(
-                        'By continuing, you acknowledge that you have read, and understood and agree to our Privacy policy.',
-                        style: TextStyle(
-                          fontFamily: "Montserrat",
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: secondaryColor
-                        )
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/profile/privacy_policy');
+                        },
+                        child: const Text(
+                          'By continuing, you acknowledge that you have read, and understood and agree to our Privacy policy.',
+                          style: TextStyle(
+                            fontFamily: "Montserrat",
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: secondaryColor
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       )    
                     ],
                   )
