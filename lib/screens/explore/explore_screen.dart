@@ -21,6 +21,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   late double lat, long;
   String filter = "Nearby Gym";
   String place = "Loading...";
+  bool _isLoading = false;
   bool search = false;
   List<DetailGym> data = [];
   bool _isMounted = false;
@@ -39,6 +40,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   getLocation() async {
+    _isLoading = true;
     var position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     if (_isMounted) {
       setState(() {
@@ -59,6 +61,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         });
       }
     }
+    _isLoading = false;
   }
 
   countMembership(int id) async {
@@ -165,10 +168,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         onChanged:(value) {
                           if(value.isNotEmpty) {
                             search = true;
+                            _isLoading = true;
                             ExploreController().searchGym(lat, long, value).then((value) {
                             setState(() {
                               data = value;
                             });
+                            _isLoading = false;
                           });
                           } else {
                             search = false;
@@ -238,8 +243,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 fontWeight: FontWeight.w600
                               ),
                             ),
-                            iconSize: 24,
-                            elevation: 16,
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -253,7 +256,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             onChanged: (String? newValue) {
                               setState(() {
                                 filter = newValue!;
-                                if(filter == "Popular Nearby Gym") {
+                                if(filter == "Popular") {
                                   ExploreController().getTopReviewsGyms(lat, long).then((value) {
                                     setState(() {
                                       data = value;
@@ -265,7 +268,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                       data = value;
                                     });
                                   });
-                                } else if(filter == "Top Rated Nearby Gym") {
+                                } else if(filter == "Top Rated") {
                                   ExploreController().getTopRatedGyms(lat, long).then((value) {
                                     setState(() {
                                       data = value;
@@ -274,7 +277,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 }
                               });
                             },
-                            items: <String>['Popular Nearby Gym', 'Nearby Gym', 'Top Rated Nearby Gym'].map<DropdownMenuItem<String>>((String value) {
+                            items: <String>['Popular', 'Nearby Gym', 'Top Rated'].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(
@@ -291,6 +294,84 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           ),
                         ],
                       ),
+                      _isLoading ?
+                      Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.width * 0.5,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: lowSecondaryColor,
+                                  width: 1
+                                ),
+                                color: Colors.grey
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        width: 100,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.grey
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 50,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.grey
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                      :
                       data.isEmpty ?
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
@@ -326,94 +407,91 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             future: countMembership(data[index].id_gym),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Transform.translate(
-                                  offset: const Offset(0, -40),
-                                  child: Shimmer.fromColors(
-                                    baseColor: Colors.grey[300]!,
-                                    highlightColor: Colors.grey[100]!,
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                          color: lowSecondaryColor,
-                                          width: 1
-                                        )
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context).size.width * 0.5,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(
-                                                color: lowSecondaryColor,
-                                                width: 1
-                                              ),
-                                              color: Colors.grey
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      width: 100,
-                                                      height: 20,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        color: Colors.grey
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      width: 50,
-                                                      height: 20,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(10),
-                                                        color: Colors.grey
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Container(
-                                                  width: MediaQuery.of(context).size.width,
-                                                  height: 20,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Colors.grey
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Container(
-                                                  width: MediaQuery.of(context).size.width,
-                                                  height: 20,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Colors.grey
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Container(
-                                                  width: MediaQuery.of(context).size.width,
-                                                  height: 20,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Colors.grey
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
+                                return Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: lowSecondaryColor,
+                                        width: 1
                                       )
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          height: MediaQuery.of(context).size.width * 0.5,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: lowSecondaryColor,
+                                              width: 1
+                                            ),
+                                            color: Colors.grey
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Container(
+                                                    width: 100,
+                                                    height: 20,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: Colors.grey
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: 50,
+                                                    height: 20,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: Colors.grey
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  color: Colors.grey
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  color: Colors.grey
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width,
+                                                height: 20,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  color: Colors.grey
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
                                     )
-                                  ),
+                                  )
                                 );
                               } else if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');

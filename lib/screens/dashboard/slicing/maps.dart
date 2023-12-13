@@ -65,10 +65,10 @@ class _MapsState extends State<Maps> {
     String overpassQuery = """
       [out:json];
       (
-        node["leisure"="fitness_centre"](around:100,$lat,$long);
-        node["amenity"="gym"](around:100,$lat,$long);
-        way["leisure"="fitness_centre"](around:100,$lat,$long);
-        relation["leisure"="fitness_centre"](around:100,$lat,$long);
+        node["leisure"="fitness_centre"](around:1000,$lat,$long);
+        node["amenity"="gym"](around:1000,$lat,$long);
+        way["leisure"="fitness_centre"](around:1000,$lat,$long);
+        relation["leisure"="fitness_centre"](around:1000,$lat,$long);
       );
       out center;
     """;

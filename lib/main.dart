@@ -70,6 +70,7 @@ class _AppScreen extends State<App> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
     return MaterialApp(
       scrollBehavior: ScrollB(),
+      title: "Gimme",
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRoute.generateRoute,
       theme: ThemeData(
