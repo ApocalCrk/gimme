@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, camel_case_types, prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 
@@ -109,7 +111,7 @@ class _modalSlideUpState extends State<modalSlideUp> {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 0),
+                    padding: EdgeInsets.only(left: 0),
                     child: Text('Burn',
                         style: TextStyle(
                           fontFamily: "Montserrat",
@@ -123,7 +125,7 @@ class _modalSlideUpState extends State<modalSlideUp> {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(right: 25.0),
+                    padding: EdgeInsets.only(right: 25.0),
                     child: Text('Sets',
                         style: TextStyle(
                           fontFamily: "Montserrat",

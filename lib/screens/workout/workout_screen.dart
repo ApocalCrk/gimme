@@ -1,5 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
-
+// ignore_for_file: non_constant_identifier_names, library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gimme/constants.dart';
@@ -7,7 +6,6 @@ import 'package:gimme/controller/workout_controller.dart';
 import 'package:gimme/screens/workout/detail_workout.dart';
 import 'package:gimme/data/workout_model.dart';
 import 'package:gimme/screens/workout/workout_components/workout_item.dart';
-import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
 class WorkoutsScreen extends StatefulWidget {

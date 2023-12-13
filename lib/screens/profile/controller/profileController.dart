@@ -1,11 +1,10 @@
-import 'dart:io';
+// ignore_for_file: file_names, avoid_print
 
+import 'dart:io';
 import 'package:gimme/screens/auth/model/User.dart';
-import 'package:gimme/screens/profile/model/profile.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:gimme/constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileController {
 

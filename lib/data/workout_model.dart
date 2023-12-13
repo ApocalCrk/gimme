@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class Workout {
   final int id_workout;
   final String description, image, workout_name, category, detail_image;

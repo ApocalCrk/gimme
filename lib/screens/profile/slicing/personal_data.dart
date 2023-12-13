@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gimme/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart';
@@ -82,7 +81,7 @@ class _PersonalDataState extends State<PersonalData> {
                   buildTextField("Height", _heightController, Icons.height),
                   const SizedBox(height: 10),
                   buildTextField("Weight", _weightController, Icons.line_weight),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   buildEditButton(context),
                   const SizedBox(height: 100),
                 ],

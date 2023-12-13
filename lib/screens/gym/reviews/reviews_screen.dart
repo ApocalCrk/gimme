@@ -4,7 +4,6 @@ import 'package:gimme/controller/gymController.dart';
 import 'package:gimme/controller/reviewsController.dart';
 import 'package:gimme/data/review.dart';
 import 'package:gimme/screens/gym/reviews/slicing/widget.dart';
-import 'package:http/http.dart';
 import 'package:extended_image/extended_image.dart';
 
 

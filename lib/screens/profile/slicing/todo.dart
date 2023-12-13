@@ -671,7 +671,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    convertMinuteToHour(listTask[index]['duration']) + " Hours",
+                                    "${convertMinuteToHour(listTask[index]['duration'])} Hours",
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,

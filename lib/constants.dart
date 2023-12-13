@@ -150,7 +150,6 @@ String formatStringDate(String date) {
   var dateSplit = date.split("T");
   var dateSplit2 = dateSplit[0].split("-");
   var dateSplit3 = dateSplit2[2].split(" ");
-  print(date);
   var month = "";
   switch (dateSplit2[1]) {
     case "01":

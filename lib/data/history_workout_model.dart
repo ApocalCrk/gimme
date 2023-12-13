@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, camel_case_types
+
 class History_Workout {
   final int id_history, id_workout, uid;
   final String calories, duration;

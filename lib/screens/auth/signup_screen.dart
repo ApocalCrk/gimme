@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:gimme/constants.dart';
 import 'package:gimme/screens/auth/controller/register.dart';
 import 'package:gimme/screens/auth/model/User.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/services.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
