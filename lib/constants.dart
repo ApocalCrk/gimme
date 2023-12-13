@@ -235,5 +235,21 @@ const List<Map<String, dynamic>> contact = [
   {
     "name": "Ferdy Firmansyah",
     "instagram": "ferdyfrms"
-  }
+  },
+  {
+    "name": "Trisna Utama",
+    "instagram": "trisnautamaa"
+  },
+  {
+    "name": "Fathur Rosi",
+    "instagram": "fathurrosi_14"
+  },
+  {
+    "name": "Simon Adrian Agis",
+    "instagram": "simon.agis"
+  },
+  {
+    "name": "Hagai Suranta Perangin-angin",
+    "instagram": "hagaisuranta"
+  },
 ];
