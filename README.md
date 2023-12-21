@@ -9,7 +9,3 @@ Daftar nama lengkap anggota dan NPM
 4. Simon Andrian Agis (210711401)
 5. Hagai Suranta Perangin-angin (200711002)
 
-Pembagian tugas dalam mengerjakan UGD API
-
-Semua anggota kelompok mengerjakan semua tugas
-
