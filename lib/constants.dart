@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gson/gson.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String url = '9f2f-182-253-176-44.ngrok-free.app';
+const String url = 'gimme.noturminesv.my.id';
 const String endpoint = '/api/v1';
 
 const Color primaryColor = Color(0xFF60CEF8);
